@@ -1,0 +1,984 @@
+[
+ {
+  "location": "A1",
+  "models": [
+   "Samsung m31",
+   "iphone 11",
+   "Redmi note 11 pro 2022",
+   "vision 5 2022",
+   "Samsung a11",
+   "hot 12",
+   "hot 8",
+   "a03 core",
+   "Oppo a74",
+   "Samsung a05",
+   "Samsung a36"
+  ]
+ },
+ {
+  "location": "A2",
+  "models": [
+   "Samsung A13 5g",
+   "Samsung a23 4g",
+   "Samsung a27",
+   "Samsung J7 max ladies",
+   "vivo y27 4g",
+   "Samsung a15",
+   "mi A3",
+   "mi 4a",
+   "vivo y53s 4g",
+   "vivo y16 4g",
+   "vivo y50",
+   "vivo y36 4g"
+  ]
+ },
+ {
+  "location": "A3",
+  "models": [
+   "Samsung a13 5g",
+   "symphony z55",
+   "Realme c25s ladies",
+   "Samsung F23",
+   "Samsung m31",
+   "vivo y36 4g",
+   "vivo y53s 4g",
+   "vivo v25,v25e",
+   "Huawei nova 3i",
+   "Huawei y7 2019",
+   "spark 8 pro"
+  ]
+ },
+ {
+  "location": "A4",
+  "models": [
+   "Samsung M22",
+   "Redmi A1 2022",
+   "vision 2s",
+   "itel p40",
+   "iphone 11",
+   "camon 17p",
+   "Realme c20",
+   "Samsung A32",
+   "Samsung j3 pro",
+   "vivo y22s",
+   "Oppo F19",
+   "Oppo A95 4g",
+   "Oppo A74",
+   "Samsung a02s",
+   "smart 5 pro"
+  ]
+ },
+ {
+  "location": "A5",
+  "models": [
+   "Realme 9i 4G",
+   "iphone 6+",
+   "smart 55 5g",
+   "Samsung A15",
+   "Samsung a05s",
+   "hot 11s",
+   "itel A56",
+   "Redmi note 13 pro+",
+   "spark 20c",
+   "Realme c33",
+   "Realme c55",
+   "iphone X",
+   "spark 8 pro"
+  ]
+ },
+ {
+  "location": "A6",
+  "models": [
+   "Itel p40",
+   "Samsung a03 core",
+   "Realme c55",
+   "Samsung J7 max",
+   "Samsung A32",
+   "Samsung a05",
+   "Oppo A53 2020",
+   "spark 8 pro",
+   "hot 12",
+   "vision 5+ 2022"
+  ]
+ },
+ {
+  "location": "A7",
+  "models": [
+   "vision 5 2022",
+   "note 11 4g 2022",
+   "vivo y02s",
+   "vivo y30",
+   "One plus 6t",
+   "Redmi note 11 pro",
+   "vivo y35",
+   "Redmi note 11 4g 2022",
+   "vision 5+ 2022",
+   "Redmi note 11 pro 2022",
+   "hot 10 play",
+   "hot 11s"
+  ]
+ },
+ {
+  "location": "B1",
+  "models": [
+   "Huawei p30 lite ladies",
+   "hot 12 play",
+   "hot 20s",
+   "Oppo a74 4g",
+   "Oppo A58 5g",
+   "hot 10s",
+   "hot 11s"
+  ]
+ },
+ {
+  "location": "B2",
+  "models": [
+   "Redmi note 6 pro",
+   "spark 8",
+   "spark 8 pro",
+   "Oppo A53 2020",
+   "Oppo A5 pro",
+   "Oppo a31,a8",
+   "hot 10 play",
+   "mi 8 lite",
+   "Samsung a10s",
+   "Poco c55, Redmi 11a, Redmi 12c"
+  ]
+ },
+ {
+  "location": "B3",
+  "models": [
+   "Oppo a57 2022 ladies",
+   "Poco x3 pro",
+   "Redmi 9a",
+   "iphone 11",
+   "hot 10 play",
+   "Samsung F23, Samsung m23",
+   "Oppo A52 4g",
+   "Oppo A17",
+   "Realme 7i",
+   "Oppo A52",
+   "Oppo A8",
+   "Samsung m32",
+   "Mi a2 lite",
+   "Oppo a37",
+   "Reno 8t 4g"
+  ]
+ },
+ {
+  "location": "B4",
+  "models": [
+   "Samsung a03",
+   "Huawei y9 prime 2019",
+   "spark 8 pro",
+   "itel a70",
+   "Oppo F21 pro",
+   "spark go 2022",
+   "spark 8",
+   "Realme 8 pro"
+  ]
+ },
+ {
+  "location": "B5",
+  "models": [
+   "itel p40",
+   "Samsung j6",
+   "vivo y02s ladies",
+   "Oppo a03 pro",
+   "Oppo F21 pro",
+   "Oppo a78",
+   "Samsung a72",
+   "Oppo a38",
+   "Huawei y7 prime 2019",
+   "Realme c15",
+   "spark 8 pro",
+   "Redmi note 10 pro",
+   "vivo y02s",
+   "Oppo A58 5g",
+   "spark go 2022"
+  ]
+ },
+ {
+  "location": "B6",
+  "models": [
+   "Redmi A1+",
+   "itel p40",
+   "Oppo F21 pro",
+   "vision 2",
+   "Redmi note 11 4g 2022",
+   "Oppo A3 pro 5g",
+   "Oppo a9 2020",
+   "Oppo a74 4g",
+   "Oppo A3 pro",
+   "Realme c15",
+   "spark go 2022",
+   "spark 8",
+   "Realme 9i"
+  ]
+ },
+ {
+  "location": "B7",
+  "models": [
+   "Samsung a31",
+   "Oppo A53 2020",
+   "nova 3i",
+   "Samsung s7",
+   "Samsung S4",
+   "spark 8",
+   "itel p40",
+   "smart 5 pro",
+   "Redmi note 11 4g",
+   "hot 12",
+   "Redmi note 13 4G",
+   "vision 5+ 2022"
+  ]
+ },
+ {
+  "location": "C1",
+  "models": [
+   "Samsung a50",
+   "vivo s1",
+   "smart 8, hot 40i",
+   "vision 5 2022",
+   "iphone 6+",
+   "Samsung S9+",
+   "Reno 5 5g",
+   "Realme GT neo 2",
+   "Samsung m02, Samsung A02",
+   "iphone 13",
+   "iphone 12",
+   "Samsung S8",
+   "Samsung S10+"
+  ]
+ },
+ {
+  "location": "C2",
+  "models": [
+   "smart 5 pro",
+   "Oppo a57 4g 2022",
+   "Pop 5 lite",
+   "Oppo a57 5g, Oppo a77 5g, Oppo k10 5g",
+   "itel p37",
+   "Oppo a74",
+   "Realme 7i",
+   "Redmi A1+ ladies",
+   "vivo y83",
+   "vivo s1 ladies",
+   "vivo y35",
+   "camon 19 neo",
+   "Realme narzo 50, Realme 8i",
+   "vivo y16",
+   "vivo s12 ladies, vivo v23 ladies"
+  ]
+ },
+ {
+  "location": "C3",
+  "models": [
+   "smart 5 pro",
+   "spark 8 pro",
+   "Samsung s7",
+   "spark go 2022",
+   "mi note 10 pro",
+   "Samsung m32 4g",
+   "Oppo F19 pro ladies",
+   "Redmi note 11 pro 2022",
+   "camon 17p",
+   "spark 7",
+   "vivo y35 4g, vivo y22, vivo y22s 4g",
+   "vivo y21e",
+   "vivo y16",
+   "vivo y30, vivo y50"
+  ]
+ },
+ {
+  "location": "C4",
+  "models": [
+   "Samsung j2 pro 18",
+   "itel a70",
+   "mi note 10",
+   "Samsung A32",
+   "Samsung j6+ , Samsung j6 prime, Samsung j610",
+   "vivo y28 4g",
+   "1+ Nord ce 2 lite 5g",
+   "Redmi note 10 pro",
+   "Redmi note 11 pro 4g 2022",
+   "1+ 9 pro",
+   "mi 5a",
+   "Samsung a50",
+   "Samsung A03 core"
+  ]
+ },
+ {
+  "location": "C5",
+  "models": [
+   "vivo y21d",
+   "Realme c71 4g",
+   "Realme c75x",
+   "vivo y400 pro 5g",
+   "Oppo F21 pro",
+   "1+ 6t",
+   "Realme narzo 50, Realme 8i",
+   "1+ 9 pro",
+   "vivo y29 4g",
+   "Samsung j2 pro 2018",
+   "spark 8",
+   "vivo y22s",
+   "vivo y35 4g, vivo y22, vivo y22s 4g",
+   "spark 6 Air ladies",
+   "spark 20c",
+   "Redmi note 11 pro 4g",
+   "spark 7",
+   "Samsung s8"
+  ]
+ },
+ {
+  "location": "C6",
+  "models": [
+   "Realme 8",
+   "vision 1+, itel p36",
+   "vivo y22s",
+   "mi 9a",
+   "Samsung A33 5g",
+   "Redmi note 11 pro",
+   "itel p40",
+   "vivo y16",
+   "Redmi note 10 pro",
+   "Redmi note 7",
+   "Redmi note 11 4g 2022",
+   "Redmi note 9 4g ladies",
+   "smart 5 pro",
+   "Samsung a03 core",
+   "Reno 8t 4g"
+  ]
+ },
+ {
+  "location": "C7",
+  "models": [
+   "Samsung a24",
+   "Samsung A50",
+   "poco x3 ladies",
+   "Mi note 10",
+   "Redmi note 9, Redmi 10x 4g",
+   "hot 11s",
+   "Samsung a16",
+   "Samsung a72",
+   "spark go 2022",
+   "vivo y16",
+   "hot 11 play",
+   "hot 12i",
+   "spark 11",
+   "Realme narzo 50, Realme 8i"
+  ]
+ },
+ {
+  "location": "C8",
+  "models": [
+   "Redmi note 10 pro",
+   "Redmi 10c",
+   "camon 40 4g",
+   "Realme c25s ladies",
+   "spark 5 pro",
+   "vision 5 2022",
+   "vivo v23 5g",
+   "symphony i67",
+   "Samsung a72",
+   "Samsung A32",
+   "Redmi note 10",
+   "Oppo a74 4g",
+   "mi A1",
+   "Redmi note 11 pro 4g 2022",
+   "Poco x3",
+   "redmi 12 4g"
+  ]
+ },
+ {
+  "location": "D1",
+  "models": [
+   "vivo y16",
+   "hot 20",
+   "itel p40",
+   "vision 1+",
+   "Redmi 7a",
+   "Redmi note 10",
+   "Redmi 12",
+   "spark go 2022",
+   "Realme 9 4g",
+   "vision 5+ 2022",
+   "1+ Nord Ce 2 lite 5g",
+   "mi 4x",
+   "Redmi note 6 pro",
+   "Redmi note 11 4g"
+  ]
+ },
+ {
+  "location": "D2",
+  "models": [
+   "Samsung s7",
+   "Redmi A1+",
+   "Redmi note 9",
+   "Realme 8 pro 4g",
+   "Realme c31 ladies",
+   "mi note 10",
+   "vivo y02s",
+   "Samsung s1",
+   "Samsung s8",
+   "Samsung s20 Fe 5g ladies",
+   "Mi 9a",
+   "redmi note 6 pro",
+   "spark 6 air ladies",
+   "Redmi 6a"
+  ]
+ },
+ {
+  "location": "D3",
+  "models": [
+   "Realme narzo 50i",
+   "Redmi note 11 4g 2022",
+   "iphone 6+",
+   "spark 8 pro",
+   "Samsung a21s",
+   "vivo y16",
+   "Oppo a57 5g, Oppo a77 5g, Oppo k10 5g",
+   "redmi note 10 pro",
+   "Realme 9i",
+   "mi 11 lite",
+   "iphone xs max",
+   "Realme GT neo 2",
+   "Realme c31"
+  ]
+ },
+ {
+  "location": "D4",
+  "models": [
+   "iphone 11",
+   "Samsung A02",
+   "smart 6",
+   "Samsung s8",
+   "Samsung A33 5g",
+   "camon 17",
+   "Samsung s8+ ladies",
+   "Realme c30s",
+   "spark 5 pro",
+   "Redmi A1+",
+   "Redmi note 13 pro",
+   "note 13 pro+ 5g",
+   "Redmi 8 pro 4g",
+   "Realme 9 4g",
+   "vivo v25 pro"
+  ]
+ },
+ {
+  "location": "D5",
+  "models": [
+   "Redmi note 8 pro",
+   "infinix note 11",
+   "Redmi note 10 pro",
+   "mi A3",
+   "Realme 9 4g",
+   "Realme 8 pro",
+   "Realme 5i ladies",
+   "Redmi 13c",
+   "spark 20c",
+   "mi 5a",
+   "Redmi A1+",
+   "Oppo a74",
+   "spark 8 pro",
+   "vision 3",
+   "hot 10s",
+   "Realme 8i"
+  ]
+ },
+ {
+  "location": "D6",
+  "models": [
+   "vision 2",
+   "vivo y35",
+   "itel s18",
+   "spark 8 pro",
+   "narzo n53",
+   "itel p40",
+   "Redmi note 11 pro 4g",
+   "Samsung f13, Samsung m13",
+   "Realme note 70",
+   "Redmi note 9 4g",
+   "vivo s16 5g ladies",
+   "Samsung a52 4g",
+   "Redmi note 10 pro ladies",
+   "Realme 7",
+   "smart 5 pro",
+   "vivo v25 5g",
+   "vivo y02s"
+  ]
+ },
+ {
+  "location": "D7",
+  "models": [
+   "Redmi note 11 pro 4g 2022",
+   "iphone x",
+   "iphone 7g",
+   "iphone 7+",
+   "Samsung s20 Fe",
+   "Redmi note 12 5g",
+   "Realme 8 pro",
+   "Reno 7 pro",
+   "Samsung a04s, Samsung a13 5g",
+   "Poco x3 ladies",
+   "Realme c31",
+   "Redmi note 11 4g 2022",
+   "Oppo F21 pro"
+  ]
+ },
+ {
+  "location": "D8",
+  "models": [
+   "Smart 5 pro",
+   "vision 5+ 2022",
+   "Redmi note 9 ladies",
+   "vivo y16",
+   "mi A1 4g",
+   "itel p40",
+   "hot 20s",
+   "Samsung S10+",
+   "Huawei enjoy 10s",
+   "Oppo a74",
+   "Samsung a22 4G",
+   "Samsung a21s",
+   "Samsung a04s"
+  ]
+ },
+ {
+  "location": "E1",
+  "models": [
+   "Hot 10 lite",
+   "vivo v23E",
+   "Realme 9i",
+   "hot 30i",
+   "hot 20",
+   "smart 5 pro",
+   "honor X8A",
+   "Huawei y6 2019",
+   "Oppo F19, Oppo a74",
+   "Realme c31",
+   "Realme 8",
+   "Samsung j2 prime",
+   "spark 7 pro",
+   "hot 12i",
+   "Redmi note 11 pro",
+   "hot 12",
+   "Redmi note 9 pro"
+  ]
+ },
+ {
+  "location": "E2",
+  "models": [
+   "Hot 60 pro+",
+   "hot 20",
+   "hot 20i",
+   "hot 20s",
+   "hot 12",
+   "nova 5t",
+   "Samsung a50",
+   "Realme c55",
+   "Redmi note 11 4g 2022",
+   "Samsung a24 4g",
+   "vivo y93",
+   "Oppo a8"
+  ]
+ },
+ {
+  "location": "E3",
+  "models": [
+   "Itel s23",
+   "Samsung a11",
+   "Samsung note 8",
+   "vivo v25 pro",
+   "Oppo a38",
+   "Oppo A58",
+   "spark 9t ladies",
+   "Pop 5 lite ladies",
+   "Samsung A33 5g",
+   "Poco x2 ladies",
+   "Samsung a42 5g",
+   "Samsung F23",
+   "Samsung a21",
+   "vision 2",
+   "itel p40"
+  ]
+ },
+ {
+  "location": "E4",
+  "models": [
+   "Redmi note 10 pro",
+   "smart 5 pro",
+   "Oppo a74",
+   "smart 8",
+   "Oppo F21 pro",
+   "vision 5 2022",
+   "redmi note 12 5g",
+   "Oppo a76",
+   "Redmi 8a",
+   "vivo y22s",
+   "vivo y27 4G",
+   "smart 8 pro",
+   "vivo y21",
+   "mi note 10"
+  ]
+ },
+ {
+  "location": "E5",
+  "models": [
+   "Infinix note 10",
+   "vivo s10E 5G, vivo V23E 4G",
+   "spark 9t",
+   "Mi 4A",
+   "Realme gt neo 2",
+   "Redmi note 11 4g",
+   "spark go 2023",
+   "Redmi 7a",
+   "Samsung j1 ace",
+   "vivo y02s",
+   "Huawei y9 2019",
+   "Oppo a74",
+   "spark 8 pro",
+   "Reno 7 pro",
+   "spark 6 go",
+   "camon 19 neo",
+   "hot 10s"
+  ]
+ },
+ {
+  "location": "E6",
+  "models": [
+   "Samsung J7 max",
+   "Redmi note 11 pro 2022",
+   "itel s25 ultra",
+   "smart 9",
+   "itel a70",
+   "Infinix note 12 g96",
+   "Samsung s20 Fe ladies",
+   "Poco x3",
+   "camon 19 neo",
+   "Realme GT neo 2",
+   "Reno 6 4g",
+   "Redmi A1 4G",
+   "spark 40 pro+",
+   "camon 40 4g"
+  ]
+ },
+ {
+  "location": "E7",
+  "models": [
+   "1+ Nord n20 5g",
+   "vivo x70 pro",
+   "hot 10i",
+   "Redmi note 11 4g",
+   "Redmi note 10 pro",
+   "vivo s12",
+   "Samsung a50,a50s",
+   "smart 5 pro",
+   "Realme c55",
+   "Oppo F19 ladies",
+   "hot 12i",
+   "Oppo a78 4G",
+   "spark 7 pro",
+   "itel p40",
+   "spark 8 pro",
+   "Samsung a03 core",
+   "Samsung a02"
+  ]
+ },
+ {
+  "location": "E8",
+  "models": [
+   "Samsung A51",
+   "spark go 2023",
+   "Realme GT neo 2",
+   "Realme 8",
+   "Redmi A1+",
+   "Redmi note 9 pro",
+   "Redmi note 11 4g",
+   "symphony z45",
+   "symphony z55"
+  ]
+ },
+ {
+  "location": "F1",
+  "models": [
+   "Redmi note 11 pro 4g",
+   "narzo 50i",
+   "vivo v20 se",
+   "Redmi note 11 4g",
+   "Oppo Reno 7",
+   "Realme 9i",
+   "camon 17p",
+   "vivo y51",
+   "Redmi note 11s",
+   "Redmi note 10",
+   "spark 9 pro ladies",
+   "Redmi A1+ ladies",
+   "Oppo F21 pro",
+   "Redmi note 11"
+  ]
+ },
+ {
+  "location": "F2",
+  "models": [
+   "Realme c31",
+   "Redmi note 11 4g",
+   "Redmi note 11 pro",
+   "Redmi note 13 4G",
+   "Reno 7 pro",
+   "Oppo a57 2022 4g",
+   "Realme GT neo 2",
+   "narzo 50i",
+   "Reno 4 pro"
+  ]
+ },
+ {
+  "location": "F3",
+  "models": [
+   "Spark 5 pro",
+   "Samsung a13 5g",
+   "hot 10 play",
+   "Redmi note 6 pro",
+   "hot 8",
+   "hot 20i",
+   "smart 6+",
+   "hot 9 play",
+   "smart 8",
+   "Redmi 6 pro",
+   "Redmi 9c",
+   "itel p37, vision 2s",
+   "Realme c31",
+   "Redmi note 9 pro",
+   "hot 30i"
+  ]
+ },
+ {
+  "location": "F4",
+  "models": [
+   "Realme c31",
+   "hot 20",
+   "Oppo A5, Oppo a3s",
+   "Samsung a23 4g",
+   "Samsung a13 5g",
+   "Redmi note 11 5g ladies",
+   "spark 8 pro",
+   "spark go 2022",
+   "smart 6+",
+   "hot 10s",
+   "Samsung a42 5g",
+   "Redmi 9a",
+   "itel a70",
+   "Redmi note 10 pro",
+   "Redmi note 11 4g 2022"
+  ]
+ },
+ {
+  "location": "F5",
+  "models": [
+   "Samsung a03 core",
+   "Redmi note 11 4g 2022",
+   "Realme c31",
+   "Realme 9i",
+   "smart 6",
+   "Samsung a72",
+   "Redmi 10c",
+   "Redmi note 11 pro 4g 2022",
+   "Redmi note 11 4g",
+   "Redmi note 9 4g",
+   "Redmi 10",
+   "Samsung a04s"
+  ]
+ },
+ {
+  "location": "F6",
+  "models": [
+   "Hot 20",
+   "1+ Nord ce 2 lite 5g",
+   "Redmi note 11 4g",
+   "Samsung a03 core",
+   "Redmi 3s",
+   "Realme c35, Realme c53",
+   "Poco x3",
+   "Redmi 9a",
+   "itel A58 lite",
+   "Redmi A1 4G",
+   "Redmi note 11 pro"
+  ]
+ },
+ {
+  "location": "F7",
+  "models": [
+   "Redmi note 11 pro",
+   "Redmi 10c",
+   "Redmi 10 2022",
+   "Redmi note 8",
+   "Redmi 9",
+   "mi a2+",
+   "Realme c55",
+   "Realme c20",
+   "mi 9a",
+   "Pop 5 lite",
+   "camon 17p"
+  ]
+ },
+ {
+  "location": "F8",
+  "models": [
+   "Oppo f1s",
+   "iphone 12 pro max",
+   "Realme 9i",
+   "Redmi note 11 4g",
+   "Realme c30, Realme c30s"
+  ]
+ },
+ {
+  "location": "G1",
+  "models": [
+   "Redmi note 11 4g",
+   "Realme 8 pro 4g",
+   "Poco x3 ladies",
+   "spark 8 pro",
+   "Reno 6 4g",
+   "Realme 9 4g",
+   "Realme c55",
+   "camon 19 neo",
+   "note 11 pro"
+  ]
+ },
+ {
+  "location": "G2",
+  "models": [
+   "Realme c33",
+   "Redmi k20",
+   "Samsung a12 5g",
+   "Samsung m30s ladies",
+   "Samsung a05s",
+   "Samsung a72 5g",
+   "Samsung a50",
+   "Samsung a03",
+   "Samsung a22 4G",
+   "Samsung m33",
+   "Samsung a22 5g",
+   "Realme 11 pro ladies",
+   "Samsung a70",
+   "Realme c31",
+   "itel p40"
+  ]
+ },
+ {
+  "location": "G3",
+  "models": [
+   "Itel p37",
+   "Redmi note 10 pro",
+   "Samsung F23",
+   "vivo y16",
+   "Redmi note 9",
+   "Samsung a22 4G",
+   "Samsung a23 4g",
+   "Samsung F23, Samsung M23",
+   "Samsung a13 5g, Samsung F13",
+   "redmi note 13 pro",
+   "spark 10c",
+   "Oppo a74, Oppo F19",
+   "Oppo a36, Oppo a76",
+   "Reno 5 4g"
+  ]
+ },
+ {
+  "location": "G4",
+  "models": [
+   "Realme narzo 50i",
+   "Samsung S9",
+   "mi 11 lite",
+   "Realme v13 5g",
+   "Oppo A1K",
+   "Oppo f19 pro+, Oppo a95 5g",
+   "mi note 9s,mi note 9 pro, note 9 pro max, Poco M2 pro",
+   "Poco x3",
+   "Samsung a50,a50s,a30s",
+   "Redmi note 9",
+   "Realme GT master",
+   "Redmi note 9 4g",
+   "Realme c55 4g"
+  ]
+ },
+ {
+  "location": "G5",
+  "models": [
+   "vivo y83",
+   "hot 12 play",
+   "hot 10",
+   "vivo v23 5g",
+   "hot 10 play",
+   "note 13 pro+ 5g",
+   "Realme c31 ladies",
+   "camon 19 neo",
+   "Redmi note 11 pro",
+   "Realme 5",
+   "Redmi note 10 4g",
+   "Redmi note 11s",
+   "spark 7 pro",
+   "Realme 9i",
+   "Oppo a74 4g"
+  ]
+ },
+ {
+  "location": "G6",
+  "models": [
+   "Oppo A52 4g",
+   "vivo y19",
+   "Redmi note 10 pro",
+   "Reno 7 4g",
+   "Tecno spark 9t",
+   "Redmi note 9",
+   "vivo y83",
+   "smart 7",
+   "note 12 5g",
+   "vision 5+ 2022",
+   "hot 12i",
+   "hot 12",
+   "Oppo A54 4g"
+  ]
+ },
+ {
+  "location": "G7",
+  "models": [
+   "itel vision 5 2022",
+   "vision 2",
+   "Samsung a10s",
+   "Samsung a22 5g",
+   "Redmi note 10 pro",
+   "hot 12",
+   "vivo y02s 4g",
+   "spark 8 pro",
+   "camon 17p",
+   "spark go 2022",
+   "spark 9t",
+   "Samsung a05s",
+   "Samsung a24",
+   "Samsung m32 4g",
+   "spark 7 pro"
+  ]
+ },
+ {
+  "location": "G8",
+  "models": [
+   "spark go 2023",
+   "hot 11 play",
+   "Realme GT neo 2",
+   "camon 20 pro",
+   "Samsung m33 5g",
+   "vivo s10e",
+   "vivo y50",
+   "Realme 5",
+   "Huawei y7 2019",
+   "Samsung f13, Samsung m13",
+   "Oppo a57",
+   "GT master",
+   "Realme c21y",
+   "vivo y23"
+  ]
+ }
+]
