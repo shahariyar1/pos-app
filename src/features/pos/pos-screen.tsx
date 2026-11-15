@@ -97,6 +97,8 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
   const items = useCart((s) => s.items);
   const addProduct = useCart((s) => s.addProduct);
 
+  const { data, isLoading, isValidating } = useSWR<ProductsResponse>(`/api/products${qs({ q: debounced, group, limit })}`, fetcher);
+
   useEffect(() => {
     setLimit(60);
     setScrollToIndex(null);
@@ -108,8 +110,6 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
       setScrollToIndex(null);
     }
   }, [data?.data.length, scrollToIndex]);
-
-  const { data, isLoading, isValidating } = useSWR<ProductsResponse>(`/api/products${qs({ q: debounced, group, limit })}`, fetcher);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
