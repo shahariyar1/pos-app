@@ -37,6 +37,8 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   const [editing, setEditing] = useState<Product | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [deleting, setDeleting] = useState<Product | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [receiving, setReceiving] = useState<Product | null>(null);
   const addProduct = useCart((s) => s.addProduct);
@@ -51,9 +53,45 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   })}`;
   const { data, isLoading } = useSWR<ProductsResponse>(key, fetcher);
   const unlocked = data?.unlocked ?? false;
+  const products = data?.data ?? [];
+  const allVisibleSelected = products.length > 0 && products.every((product) => selectedIds.includes(product._id));
+
+  function toggleProduct(id: string, checked: boolean) {
+    setSelectedIds((current) => checked ? (current.includes(id) ? current : [...current, id]) : current.filter((selectedId) => selectedId !== id));
+  }
+
+  function toggleAllVisible(checked: boolean) {
+    const visibleIds = products.map((product) => product._id);
+    setSelectedIds((current) => checked
+      ? [...new Set([...current, ...visibleIds])]
+      : current.filter((id) => !visibleIds.includes(id))
+    );
+  }
 
   const columns = useMemo<ColumnDef<Product>[]>(() => {
     const cols: ColumnDef<Product>[] = [
+      {
+        id: "select",
+        header: () => (
+          <input
+            type="checkbox"
+            aria-label="Select all visible products"
+            checked={allVisibleSelected}
+            onChange={(event) => toggleAllVisible(event.target.checked)}
+            className="size-4 accent-primary"
+          />
+        ),
+        cell: ({ row }) => (
+          <input
+            type="checkbox"
+            aria-label={`Select ${row.original.name} ${row.original.code}`}
+            checked={selectedIds.includes(row.original._id)}
+            onChange={(event) => toggleProduct(row.original._id, event.target.checked)}
+            className="size-4 accent-primary"
+          />
+        ),
+        enableSorting: false,
+      },
       {
         id: "add",
         header: () => <span className="sr-only">Add to memo</span>,
@@ -119,7 +157,23 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       },
     );
     return cols;
-  }, [unlocked, addProduct]);
+  }, [unlocked, addProduct, selectedIds, allVisibleSelected, products]);
+
+  async function confirmBulkDelete() {
+    if (selectedIds.length === 0) return;
+    try {
+      const result = await api<{ deletedCount: number }>("/api/products/bulk-delete", {
+        method: "POST",
+        body: JSON.stringify({ ids: selectedIds }),
+      });
+      toast.success(`${result.deletedCount} product${result.deletedCount === 1 ? "" : "s"} removed`);
+      setSelectedIds([]);
+      setBulkDeleteOpen(false);
+      revalidate("/api/products");
+    } catch (e) {
+      toast.error(errorMessage(e));
+    }
+  }
 
   async function confirmDelete() {
     if (!deleting) return;
@@ -139,6 +193,11 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Inventory</h1>
         <div className="flex flex-wrap gap-2">
+          {selectedIds.length > 0 && (
+            <Button variant="destructive" onClick={() => setBulkDeleteOpen(true)}>
+              <Trash2 className="size-4" aria-hidden /> Delete selected ({selectedIds.length})
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setImportOpen(true)}>
             <FileUp className="size-4" aria-hidden /> Import from file
           </Button>
@@ -192,11 +251,26 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
         </Select>
       </div>
 
-      <DataTable columns={columns} data={data?.data ?? []} loading={isLoading} emptyMessage="No products match. Clear the filters or add a product." />
+      <DataTable columns={columns} data={products} loading={isLoading} emptyMessage="No products match. Clear the filters or add a product." />
 
       <ImportFileDialog key={String(importOpen)} open={importOpen} onOpenChange={setImportOpen} />
       <ReceiveStockDialog key={receiving?._id ?? "none"} product={receiving} onClose={() => setReceiving(null)} />
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} canEditCost={unlocked} />
+
+      <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedIds.length} selected products?</AlertDialogTitle>
+            <AlertDialogDescription>
+              These products will be removed from the active inventory. Past sales and returns will keep their history. This action cannot be undone from the inventory screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmBulkDelete}>Delete selected</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
         <AlertDialogContent>
