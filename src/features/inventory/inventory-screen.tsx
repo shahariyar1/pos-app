@@ -73,22 +73,10 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       {
         id: "select",
         header: () => (
-          <input
-            type="checkbox"
-            aria-label="Select all visible products"
-            checked={allVisibleSelected}
-            onChange={(event) => toggleAllVisible(event.target.checked)}
-            className="size-4 accent-primary"
-          />
+          <input type="checkbox" aria-label="Select all visible products" checked={allVisibleSelected} onChange={(event) => toggleAllVisible(event.target.checked)} className="size-4 accent-primary" />
         ),
         cell: ({ row }) => (
-          <input
-            type="checkbox"
-            aria-label={`Select ${row.original.name} ${row.original.code}`}
-            checked={selectedIds.includes(row.original._id)}
-            onChange={(event) => toggleProduct(row.original._id, event.target.checked)}
-            className="size-4 accent-primary"
-          />
+          <input type="checkbox" aria-label={`Select ${row.original.name} ${row.original.code}`} checked={selectedIds.includes(row.original._id)} onChange={(event) => toggleProduct(row.original._id, event.target.checked)} className="size-4 accent-primary" />
         ),
         enableSorting: false,
       },
@@ -96,65 +84,30 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
         id: "add",
         header: () => <span className="sr-only">Add to memo</span>,
         cell: ({ row }) => (
-          <Button
-            size="icon"
-            className="size-10 rounded-full"
-            disabled={row.original.stock <= 0}
-            aria-label={`Add ${row.original.name} ${row.original.code} to memo`}
-            onClick={() => addProduct(row.original)}
-          >
+          <Button size="icon" className="size-10 rounded-full" disabled={row.original.stock <= 0} aria-label={`Add ${row.original.name} ${row.original.code} to memo`} onClick={() => addProduct(row.original)}>
             <Plus className="size-5" />
           </Button>
         ),
       },
       { accessorKey: "code", header: "Code", cell: ({ row }) => <span className="font-medium">{row.original.code}</span> },
       { accessorKey: "name", header: "Name" },
-      {
-        accessorKey: "group",
-        header: "Group",
-        cell: ({ row }) => (row.original.group ? <Badge variant="outline">{row.original.group}</Badge> : <span className="text-muted-foreground">None</span>),
-      },
-      {
-        accessorKey: "location",
-        header: "Location",
-        cell: ({ row }) => (row.original.location ? <Badge variant="secondary">{row.original.location}</Badge> : <span className="text-muted-foreground">None</span>),
-      },
+      { accessorKey: "group", header: "Group", cell: ({ row }) => (row.original.group ? <Badge variant="outline">{row.original.group}</Badge> : <span className="text-muted-foreground">None</span>) },
+      { accessorKey: "location", header: "Location", cell: ({ row }) => (row.original.location ? <Badge variant="secondary">{row.original.location}</Badge> : <span className="text-muted-foreground">None</span>) },
     ];
-    if (unlocked) {
-      cols.push({ accessorKey: "costPrice", header: "Cost", cell: ({ row }) => formatMoney(row.original.costPrice ?? 0) });
-    }
+    if (unlocked) cols.push({ accessorKey: "costPrice", header: "Cost", cell: ({ row }) => formatMoney(row.original.costPrice ?? 0) });
     cols.push(
       { accessorKey: "salePrice", header: "Sale price", cell: ({ row }) => formatMoney(row.original.salePrice) },
-      {
-        accessorKey: "stock",
-        header: "Stock",
-        cell: ({ row }) => {
-          const { stock: s, lowStockThreshold: t } = row.original;
-          return (
-            <span className={cn("font-medium", s === 0 && "text-destructive", s > 0 && s <= t && "text-warn")}>
-              {s}
-              {s === 0 ? " · out" : s <= t ? " · low" : ""}
-            </span>
-          );
-        },
-      },
-      {
-        id: "actions",
-        header: () => <span className="sr-only">Actions</span>,
-        cell: ({ row }) => (
-          <div className="flex justify-end gap-1">
-            <Button variant="ghost" size="icon" aria-label={`Receive stock for ${row.original.name}`} title="Receive stock" onClick={() => setReceiving(row.original)}>
-              <PackagePlus className="size-4" />
-            </Button>
-            <Button variant="ghost" size="icon" aria-label={`Edit ${row.original.name}`} onClick={() => { setEditing(row.original); setFormOpen(true); }}>
-              <Pencil className="size-4" />
-            </Button>
-            <Button variant="ghost" size="icon" aria-label={`Delete ${row.original.name}`} onClick={() => setDeleting(row.original)}>
-              <Trash2 className="size-4 text-destructive" />
-            </Button>
-          </div>
-        ),
-      },
+      { accessorKey: "stock", header: "Stock", cell: ({ row }) => {
+        const { stock: s, lowStockThreshold: t } = row.original;
+        return <span className={cn("font-medium", s === 0 && "text-destructive", s > 0 && s <= t && "text-warn")}>{s}{s === 0 ? " · out" : s <= t ? " · low" : ""}</span>;
+      } },
+      { id: "actions", header: () => <span className="sr-only">Actions</span>, cell: ({ row }) => (
+        <div className="flex justify-end gap-1">
+          <Button variant="ghost" size="icon" aria-label={`Receive stock for ${row.original.name}`} title="Receive stock" onClick={() => setReceiving(row.original)}><PackagePlus className="size-4" /></Button>
+          <Button variant="ghost" size="icon" aria-label={`Edit ${row.original.name}`} onClick={() => { setEditing(row.original); setFormOpen(true); }}><Pencil className="size-4" /></Button>
+          <Button variant="ghost" size="icon" aria-label={`Delete ${row.original.name}`} onClick={() => setDeleting(row.original)}><Trash2 className="size-4 text-destructive" /></Button>
+        </div>
+      ) },
     );
     return cols;
   }, [unlocked, addProduct, selectedIds, allVisibleSelected, toggleProduct, toggleAllVisible]);
@@ -162,17 +115,12 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   async function confirmBulkDelete() {
     if (selectedIds.length === 0) return;
     try {
-      const result = await api<{ deletedCount: number }>("/api/products/bulk-delete", {
-        method: "POST",
-        body: JSON.stringify({ ids: selectedIds }),
-      });
+      const result = await api<{ deletedCount: number }>("/api/products/bulk-delete", { method: "POST", body: JSON.stringify({ ids: selectedIds }) });
       toast.success(`${result.deletedCount} product${result.deletedCount === 1 ? "" : "s"} removed`);
       setSelectedIds([]);
       setBulkDeleteOpen(false);
       revalidate("/api/products");
-    } catch (e) {
-      toast.error(errorMessage(e));
-    }
+    } catch (e) { toast.error(errorMessage(e)); }
   }
 
   async function confirmDelete() {
@@ -180,13 +128,9 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
     try {
       await api(`/api/products/${deleting._id}`, { method: "DELETE" });
       toast.success(`${deleting.name} removed`);
-      setDeletePageResetKey((current) => current + 1);
       revalidate("/api/products");
-    } catch (e) {
-      toast.error(errorMessage(e));
-    } finally {
-      setDeleting(null);
-    }
+    } catch (e) { toast.error(errorMessage(e)); }
+    finally { setDeleting(null); }
   }
 
   return (
@@ -194,62 +138,17 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Inventory</h1>
         <div className="flex flex-wrap gap-2">
-          {selectedIds.length > 0 && (
-            <Button variant="destructive" onClick={() => setBulkDeleteOpen(true)}>
-              <Trash2 className="size-4" aria-hidden /> Delete selected ({selectedIds.length})
-            </Button>
-          )}
-          <Button variant="outline" onClick={() => setImportOpen(true)}>
-            <FileUp className="size-4" aria-hidden /> Import from file
-          </Button>
-          <Button onClick={() => { setEditing(null); setFormOpen(true); }}>
-            <Plus className="size-4" aria-hidden /> Add product
-          </Button>
+          {selectedIds.length > 0 && <Button variant="destructive" onClick={() => setBulkDeleteOpen(true)}><Trash2 className="size-4" aria-hidden /> Delete selected ({selectedIds.length})</Button>}
+          <Button variant="outline" onClick={() => setImportOpen(true)}><FileUp className="size-4" aria-hidden /> Import from file</Button>
+          <Button onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="size-4" aria-hidden /> Add product</Button>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <div className="relative min-w-60 flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-          <Input aria-label="Search inventory" placeholder="Search by code, name or location" className="bg-card pl-9" value={q} onChange={(e) => setQ(e.target.value)} />
-        </div>
-        <Select value={group} onValueChange={setGroup}>
-          <SelectTrigger aria-label="Filter by group" className="w-40 bg-card">
-            <SelectValue placeholder="Group" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All groups</SelectItem>
-            {data?.groups.map((g) => (
-              <SelectItem key={g} value={g}>
-                {g}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={location} onValueChange={setLocation}>
-          <SelectTrigger aria-label="Filter by location" className="w-40 bg-card">
-            <SelectValue placeholder="Location" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All locations</SelectItem>
-            {data?.locations.map((l) => (
-              <SelectItem key={l} value={l}>
-                {l}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={stock} onValueChange={setStock}>
-          <SelectTrigger aria-label="Filter by stock level" className="w-40 bg-card">
-            <SelectValue placeholder="Stock" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All stock levels</SelectItem>
-            <SelectItem value="in">In stock</SelectItem>
-            <SelectItem value="low">Low stock</SelectItem>
-            <SelectItem value="out">Out of stock</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="relative min-w-60 flex-1"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden /><Input aria-label="Search inventory" placeholder="Search by code, name or location" className="bg-card pl-9" value={q} onChange={(e) => setQ(e.target.value)} /></div>
+        <Select value={group} onValueChange={setGroup}><SelectTrigger aria-label="Filter by group" className="w-40 bg-card"><SelectValue placeholder="Group" /></SelectTrigger><SelectContent><SelectItem value="all">All groups</SelectItem>{data?.groups.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select>
+        <Select value={location} onValueChange={setLocation}><SelectTrigger aria-label="Filter by location" className="w-40 bg-card"><SelectValue placeholder="Location" /></SelectTrigger><SelectContent><SelectItem value="all">All locations</SelectItem>{data?.locations.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent></Select>
+        <Select value={stock} onValueChange={setStock}><SelectTrigger aria-label="Filter by stock level" className="w-40 bg-card"><SelectValue placeholder="Stock" /></SelectTrigger><SelectContent><SelectItem value="all">All stock levels</SelectItem><SelectItem value="in">In stock</SelectItem><SelectItem value="low">Low stock</SelectItem><SelectItem value="out">Out of stock</SelectItem></SelectContent></Select>
       </div>
 
       <DataTable columns={columns} data={products} loading={isLoading} emptyMessage="No products match. Clear the filters or add a product." />
@@ -258,33 +157,8 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       <ReceiveStockDialog key={receiving?._id ?? "none"} product={receiving} onClose={() => setReceiving(null)} />
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} canEditCost={unlocked} />
 
-      <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete {selectedIds.length} selected products?</AlertDialogTitle>
-            <AlertDialogDescription>
-              These products will be removed from the active inventory. Past sales and returns will keep their history. This action cannot be undone from the inventory screen.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmBulkDelete}>Delete selected</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove {deleting?.name}?</AlertDialogTitle>
-            <AlertDialogDescription>It disappears from search and the memo. Past sales and returns keep their history.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Keep product</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Remove product</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete {selectedIds.length} selected products?</AlertDialogTitle><AlertDialogDescription>These products will be removed from the active inventory. Past sales and returns will keep their history. This action cannot be undone from the inventory screen.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmBulkDelete}>Delete selected</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Remove {deleting?.name}?</AlertDialogTitle><AlertDialogDescription>It disappears from search and the memo. Past sales and returns keep their history.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Keep product</AlertDialogCancel><AlertDialogAction onClick={confirmDelete}>Remove product</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
     </div>
   );
 }
