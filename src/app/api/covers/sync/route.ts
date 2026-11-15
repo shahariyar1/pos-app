@@ -26,56 +26,60 @@ async function readSheet(): Promise<{ pairs: Pair[]; groups: { location: string;
   if (!response.ok) throw new HttpError(502, `Google Sheets returned HTTP ${response.status}`);
 
   const rows = parseCsv(await response.text());
+  const headerIndex = rows.findIndex((row) => {
+    const headers = row.map((cell) => clean(cell).replace(/^\\uFEFF/, "").toLowerCase());
+    return headers.includes("products") && headers.includes("location");
+  });
+  if (headerIndex < 0) {
+    throw new HttpError(422, 'Could not find the "Products" and "Location" column headers in the published sheet. No data was changed.');
+  }
+
+  const headers = rows[headerIndex].map((cell) => clean(cell).replace(/^\\uFEFF/, "").toLowerCase());
+  const productsIndex = headers.indexOf("products");
+  const locationIndex = headers.indexOf("location");
   const byLocation = new Map<string, string[]>();
   const seen = new Set<string>();
   let invalidRows = 0;
 
-  for (const raw of rows) {
-    const cells = raw.map(clean).filter(Boolean);
-    if (!cells.length) continue;
-    if (cells.length >= 2 && /^(location|shelf|rack)$/i.test(cells[cells.length - 1])) continue;
+  for (const raw of rows.slice(headerIndex + 1)) {
+    const productText = clean(raw[productsIndex] ?? "");
+    const locationText = clean(raw[locationIndex] ?? "").toUpperCase();
 
-    let location = "";
-    let modelCells = cells;
-    const last = cells[cells.length - 1];
-    if (cells.length > 1 && /^[A-Za-z]{1,2}\d{0,2}$/.test(last)) {
-      location = last.toUpperCase();
-      modelCells = cells.slice(0, -1);
-    } else if (cells.length === 1) {
-      const match = last.match(/^(.*\S)\s+([A-Z]{1,2}\d{0,2})$/i);
-      if (match) {
-        location = match[2].toUpperCase();
-        modelCells = [match[1]];
-      }
-    }
+    // Ignore fully empty rows and rows with no Products value.
+    if (!productText) continue;
 
-    const models = modelCells.join("/").split("/").map(clean).filter(Boolean);
-    if (!location || !models.length) {
+    // The inventory sheet uses locations A through O.
+    if (!/^[A-O]$/.test(locationText)) {
       invalidRows += 1;
       continue;
     }
 
+    // Split model names only on "/", preserving commas inside model names.
+    const models = productText.split("/").map(clean).filter(Boolean);
+    if (!models.length) continue;
+
     for (const model of models) {
-      const pair = { location, model };
+      const pair = { location: locationText, model };
       const key = pairKey(pair);
       if (seen.has(key)) continue;
       seen.add(key);
-      const list = byLocation.get(location) ?? [];
+      const list = byLocation.get(locationText) ?? [];
       list.push(model);
-      byLocation.set(location, list);
+      byLocation.set(locationText, list);
     }
   }
 
   if (invalidRows > 0) {
-    throw new HttpError(422, `The sheet has ${invalidRows} non-empty row(s) without a valid location. No data was changed; check the sheet format first.`);
+    throw new HttpError(422, `The sheet has ${invalidRows} product row(s) with an empty or invalid Location. Use A–O in the Location column. No data was changed.`);
   }
-  if (!seen.size) throw new HttpError(422, "No cover models were found in the published sheet. No data was changed.");
+  if (!seen.size) {
+    throw new HttpError(422, "No cover models were found under the Products column. No data was changed.");
+  }
 
   const groups = [...byLocation.entries()].map(([location, models]) => ({ location, models }));
-  const pairs = groups.flatMap((g) => g.models.map((model) => ({ location: g.location, model })));
+  const pairs = groups.flatMap((group) => group.models.map((model) => ({ location: group.location, model })));
   return { pairs, groups };
 }
-
 async function currentPairs(): Promise<Pair[]> {
   const docs = await CoverGroup.find().select("location models").lean();
   const pairs: Pair[] = [];
