@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { Plus, Receipt, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -90,6 +90,8 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
   const [group, setGroup] = useState<string | null>(null);
   const [memoOpen, setMemoOpen] = useState(false);
   const [limit, setLimit] = useState(60);
+  const [scrollToIndex, setScrollToIndex] = useState<number | null>(null);
+  const newProductsRef = useRef<HTMLLIElement | null>(null);
   const debounced = useDebounce(q.trim(), 150);
   const mounted = useMounted();
   const items = useCart((s) => s.items);
@@ -97,7 +99,15 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
 
   useEffect(() => {
     setLimit(60);
+    setScrollToIndex(null);
   }, [debounced, group]);
+
+  useEffect(() => {
+    if (scrollToIndex !== null && (data?.data.length ?? 0) > scrollToIndex) {
+      newProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setScrollToIndex(null);
+    }
+  }, [data?.data.length, scrollToIndex]);
 
   const { data, isLoading, isValidating } = useSWR<ProductsResponse>(`/api/products${qs({ q: debounced, group, limit })}`, fetcher);
 
@@ -146,8 +156,8 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
           </div>
         ) : data?.data.length ? (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {data.data.map((p) => (
-              <li key={p._id}>
+            {data.data.map((p, index) => (
+              <li key={p._id} ref={index === scrollToIndex ? newProductsRef : undefined}>
                 <ProductCard product={p} />
               </li>
             ))}
@@ -165,7 +175,10 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
             </p>
             <Button
               variant="outline"
-              onClick={() => setLimit((current) => Math.min(current + 60, 2000))}
+              onClick={() => {
+                setScrollToIndex(data.data.length);
+                setLimit((current) => Math.min(current + 60, 2000));
+              }}
               disabled={isValidating}
             >
               {isValidating ? "Loading..." : "Load more products"}
