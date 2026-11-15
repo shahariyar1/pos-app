@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { api, errorMessage, revalidate } from "@/lib/fetcher";
 import { analyse, buildPayload, type Analysis, type Sheet } from "@/lib/import-parse";
 import { formatMoney } from "@/lib/utils";
+import { CoverSheetSync } from "@/features/inventory/cover-sheet-sync";
 
 type Result = { created: number; skipped: number; restocked: number; replaced: number };
 
@@ -125,6 +126,7 @@ export function ImportFileDialog({ open, onOpenChange }: { open: boolean; onOpen
               {busy === "reading" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <FileUp className="size-4" aria-hidden />}
               {busy === "reading" ? "Reading…" : "Choose file"}
             </Button>
+            <CoverSheetSync />
             <span className="text-sm text-muted-foreground">{fileName || "Excel, CSV or PDF, up to 4 MB"}</span>
             <button type="button" className="ml-auto text-sm font-medium underline" onClick={downloadSample}>
               Download sample file
