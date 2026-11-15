@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Plus, Receipt, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -89,12 +89,17 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
   const [q, setQ] = useState(initialQuery);
   const [group, setGroup] = useState<string | null>(null);
   const [memoOpen, setMemoOpen] = useState(false);
+  const [limit, setLimit] = useState(60);
   const debounced = useDebounce(q.trim(), 150);
   const mounted = useMounted();
   const items = useCart((s) => s.items);
   const addProduct = useCart((s) => s.addProduct);
 
-  const { data, isLoading } = useSWR<ProductsResponse>(`/api/products${qs({ q: debounced, group, limit: 60 })}`, fetcher);
+  useEffect(() => {
+    setLimit(60);
+  }, [debounced, group]);
+
+  const { data, isLoading, isValidating } = useSWR<ProductsResponse>(`/api/products${qs({ q: debounced, group, limit })}`, fetcher);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
@@ -150,6 +155,26 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
         ) : (
           <p className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
             No product matches "{q}". Check the spelling or add it in Inventory.
+          </p>
+        )}
+
+        {data && data.total > data.data.length && limit < 2000 && (
+          <div className="flex flex-col items-center gap-2 py-2">
+            <p className="text-xs text-muted-foreground">
+              Showing {data.data.length} of {data.total} products
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => setLimit((current) => Math.min(current + 60, 2000))}
+              disabled={isValidating}
+            >
+              {isValidating ? "Loading..." : "Load more products"}
+            </Button>
+          </div>
+        )}
+        {data && data.total > data.data.length && limit >= 2000 && (
+          <p className="text-center text-xs text-muted-foreground">
+            Showing the first 2,000 products. Search to find other products.
           </p>
         )}
       </section>
