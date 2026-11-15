@@ -185,7 +185,8 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
         imageUrl: nextImageUrl,
         imagePublicId: nextImagePublicId,
         galleryImages: uploadedGalleryImages,
-          youtubeUrls: youtubeUrls,
+        youtubeUrls: youtubeUrls,
+
       };
 
       if (!showCost) {
