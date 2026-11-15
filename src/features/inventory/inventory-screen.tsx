@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileUp, PackagePlus, Pencil, Plus, Search, Trash2 } from "lucide-react";
@@ -56,17 +56,17 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   const products = data?.data ?? [];
   const allVisibleSelected = products.length > 0 && products.every((product) => selectedIds.includes(product._id));
 
-  function toggleProduct(id: string, checked: boolean) {
+  const toggleProduct = useCallback((id: string, checked: boolean) => {
     setSelectedIds((current) => checked ? (current.includes(id) ? current : [...current, id]) : current.filter((selectedId) => selectedId !== id));
-  }
+  }, []);
 
-  function toggleAllVisible(checked: boolean) {
+  const toggleAllVisible = useCallback((checked: boolean) => {
     const visibleIds = products.map((product) => product._id);
     setSelectedIds((current) => checked
       ? [...new Set([...current, ...visibleIds])]
       : current.filter((id) => !visibleIds.includes(id))
     );
-  }
+  }, [products]);
 
   const columns = useMemo<ColumnDef<Product>[]>(() => {
     const cols: ColumnDef<Product>[] = [
@@ -157,7 +157,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       },
     );
     return cols;
-  }, [unlocked, addProduct, selectedIds, allVisibleSelected, products]);
+  }, [unlocked, addProduct, selectedIds, allVisibleSelected, toggleProduct, toggleAllVisible]);
 
   async function confirmBulkDelete() {
     if (selectedIds.length === 0) return;
