@@ -21,10 +21,11 @@ type Props<T> = {
   loading?: boolean;
   emptyMessage?: string;
   pageSize?: number;
+  resetPageIndex?: number;
 };
 
 /** Sortable, paginated Shadcn table. Filtering happens server-side via the page's query params. */
-export function DataTable<T>({ columns, data, loading, emptyMessage = "Nothing to show yet.", pageSize = 15 }: Props<T>) {
+export function DataTable<T>({ columns, data, loading, emptyMessage = "Nothing to show yet.", pageSize = 15, resetPageIndex }: Props<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -36,6 +37,10 @@ export function DataTable<T>({ columns, data, loading, emptyMessage = "Nothing t
     getPaginationRowModel: getPaginationRowModel(),
     initialState: { pagination: { pageSize } },
   });
+
+  React.useEffect(() => {
+    table.setPageIndex(0);
+  }, [resetPageIndex, table]);
 
   return (
     <div className="space-y-3">
