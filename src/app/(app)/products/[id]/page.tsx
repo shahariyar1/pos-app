@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { connectDB } from "@/lib/db";
 import { Product } from "@/models/product";
 import { ProductGallery } from "@/features/inventory/product-gallery";
+import { AddToMemoButton } from "@/features/pos/add-to-memo-button";
+
 export const metadata: Metadata = {
     title: "Product Details",
 };
@@ -60,6 +61,13 @@ export default async function ProductDetailsPage({
 
     if (!product) notFound();
 
+    const memoProduct = {
+        _id: product._id.toString(),
+        name: product.name,
+        code: product.code,
+        salePrice: Number(product.salePrice),
+    };
+
     return (
         <div className="mx-auto max-w-5xl space-y-5">
             <div className="flex items-center gap-3">
@@ -80,7 +88,6 @@ export default async function ProductDetailsPage({
 
             <div className="grid gap-6 md:grid-cols-2">
                 <Card className="overflow-hidden p-3">
-
                     <ProductGallery
                         name={product.name}
                         images={[
@@ -93,7 +100,6 @@ export default async function ProductDetailsPage({
                             ...(product.galleryImages ?? []),
                         ]}
                     />
-
                 </Card>
 
                 <Card className="space-y-4 p-5">
@@ -109,6 +115,8 @@ export default async function ProductDetailsPage({
                             ? `${product.stock} in stock`
                             : "Out of stock"}
                     </Badge>
+
+                    <AddToMemoButton product={memoProduct} stock={product.stock} />
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                         <div>
