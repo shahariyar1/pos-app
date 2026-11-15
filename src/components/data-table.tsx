@@ -21,26 +21,31 @@ type Props<T> = {
   loading?: boolean;
   emptyMessage?: string;
   pageSize?: number;
-  resetPageIndex?: number;
 };
 
 /** Sortable, paginated Shadcn table. Filtering happens server-side via the page's query params. */
-export function DataTable<T>({ columns, data, loading, emptyMessage = "Nothing to show yet.", pageSize = 15, resetPageIndex }: Props<T>) {
+export function DataTable<T>({ columns, data, loading, emptyMessage = "Nothing to show yet.", pageSize = 15 }: Props<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize });
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: { sorting, pagination },
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize } },
   });
 
+  // Keep the current page after a deletion; only move back if that page no longer exists.
   React.useEffect(() => {
-    table.setPageIndex(0);
-  }, [resetPageIndex, table]);
+    const lastPageIndex = Math.max(0, Math.ceil(data.length / pagination.pageSize) - 1);
+    if (pagination.pageIndex > lastPageIndex) {
+      setPagination((current) => ({ ...current, pageIndex: lastPageIndex }));
+    }
+  }, [data.length, pagination.pageIndex, pagination.pageSize]);
 
   return (
     <div className="space-y-3">
