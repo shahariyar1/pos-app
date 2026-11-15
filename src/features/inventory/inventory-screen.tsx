@@ -41,6 +41,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [receiving, setReceiving] = useState<Product | null>(null);
+  const [deletePageResetKey, setDeletePageResetKey] = useState(0);
   const addProduct = useCart((s) => s.addProduct);
   const debounced = useDebounce(q.trim(), 200);
 
@@ -169,6 +170,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       toast.success(`${result.deletedCount} product${result.deletedCount === 1 ? "" : "s"} removed`);
       setSelectedIds([]);
       setBulkDeleteOpen(false);
+      setDeletePageResetKey((current) => current + 1);
       revalidate("/api/products");
     } catch (e) {
       toast.error(errorMessage(e));
@@ -180,6 +182,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
     try {
       await api(`/api/products/${deleting._id}`, { method: "DELETE" });
       toast.success(`${deleting.name} removed`);
+      setDeletePageResetKey((current) => current + 1);
       revalidate("/api/products");
     } catch (e) {
       toast.error(errorMessage(e));
@@ -251,7 +254,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
         </Select>
       </div>
 
-      <DataTable columns={columns} data={products} loading={isLoading} emptyMessage="No products match. Clear the filters or add a product." />
+      <DataTable columns={columns} data={products} loading={isLoading} resetPageIndex={deletePageResetKey} emptyMessage="No products match. Clear the filters or add a product." />
 
       <ImportFileDialog key={String(importOpen)} open={importOpen} onOpenChange={setImportOpen} />
       <ReceiveStockDialog key={receiving?._id ?? "none"} product={receiving} onClose={() => setReceiving(null)} />
