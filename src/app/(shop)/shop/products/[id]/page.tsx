@@ -6,6 +6,6 @@ export const metadata: Metadata = { title: "Product Details" };
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!/^[a-f\\d]{24}$/i.test(id)) notFound();
+  if (!/^[a-f\d]{24}$/i.test(id)) notFound();
   return <CustomerProductDetails id={id} />;
 }
