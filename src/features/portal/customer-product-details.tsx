@@ -31,7 +31,31 @@ export function CustomerProductDetails({ id }: { id: string }) {
     return <div className="space-y-4"><Link href="/shop" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4" /> Back to shop</Link><p className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">Product not found or no longer available.</p></div>;
   }
 
-  const images = product.images?.length ? product.images : product.imageUrl ? [{ url: product.imageUrl, publicId: "" }] : [];
+  const images = product.images?.length
+    ? product.images
+    : product.imageUrl
+      ? [{ url: product.imageUrl, publicId: "" }]
+      : [];
+
+  function getYouTubeVideoId(value: string) {
+    try {
+      const url = new URL(value);
+
+      if (url.hostname === "youtu.be") {
+        return url.pathname.split("/")[1] ?? null;
+      }
+
+      if (["youtube.com", "www.youtube.com", "m.youtube.com"].includes(url.hostname)) {
+        if (url.pathname === "/watch") return url.searchParams.get("v");
+
+        return url.pathname.match(/^\\/(shorts|embed)\\/([^/?]+)/)?.[2] ?? null;
+      }
+    } catch {
+      return null;
+    }
+
+    return null;
+  }
 
   return (
     <div className="space-y-5">
@@ -63,6 +87,31 @@ export function CustomerProductDetails({ id }: { id: string }) {
           </div>
         </Card>
       </div>
+
+      {product.youtubeUrls?.length > 0 && (
+        <Card className="p-4">
+          <h2 className="mb-4 text-lg font-semibold">Product Videos</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {product.youtubeUrls.map((url, index) => {
+              const videoId = getYouTubeVideoId(url);
+
+              if (!videoId) return null;
+
+              return (
+                <iframe
+                  key={`${videoId}-${index}`}
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                  title={`Product Video ${index + 1}`}
+                  className="aspect-video w-full rounded-lg"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              );
+            })}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
