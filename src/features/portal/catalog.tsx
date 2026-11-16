@@ -33,6 +33,11 @@ function ProductCard({ p }: { p: PortalProduct }) {
 
   return (
     <Card className="gap-3 p-3">
+      {p.imageUrl && (
+        <div className="overflow-hidden rounded-lg bg-muted">
+          <img src={p.imageUrl} alt={p.name} loading="lazy" className="aspect-[4/3] w-full object-contain" />
+        </div>
+      )}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate font-medium">{p.name}</p>
