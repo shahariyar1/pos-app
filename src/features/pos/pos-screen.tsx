@@ -50,6 +50,12 @@ function ProductCard({ product }: { product: Product }) {
           {product.code}
         </p>
 
+        {product.location && (
+          <p className="text-xs font-medium text-primary">
+            Location: {product.location}
+          </p>
+        )}
+
         <div className="flex flex-wrap items-center gap-1">
           <Badge variant="secondary">
             {out ? "Out of stock" : `${product.stock} in stock`}
