@@ -33,16 +33,19 @@ function ProductCard({ p }: { p: PortalProduct }) {
 
   return (
     <Card className="gap-3 p-3">
-      {p.imageUrl && (
-        <div className="overflow-hidden rounded-lg bg-muted">
+      <Link href={`/shop/products/${p._id}`} className="block overflow-hidden rounded-lg bg-muted" aria-label={`View details for ${p.name}`}>
+        {p.imageUrl ? (
           <img src={p.imageUrl} alt={p.name} loading="lazy" className="aspect-[4/3] w-full object-contain" />
-        </div>
-      )}
+        ) : (
+          <div className="flex aspect-[4/3] items-center justify-center text-sm text-muted-foreground">No image</div>
+        )}
+      </Link>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate font-medium">{p.name}</p>
+          <Link href={`/shop/products/${p._id}`} className="truncate font-medium hover:text-primary">{p.name}</Link>
           <p className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
             <span>{p.code}</span>
+            <Link href={`/shop/products/${p._id}`} className="underline underline-offset-2">Details</Link>
             {p.group && <Badge variant="outline">{p.group}</Badge>}
           </p>
         </div>
