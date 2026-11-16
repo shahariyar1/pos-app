@@ -38,6 +38,7 @@ export function toView(rep: Lean, members: Lean[]): PortalView {
       ...(m.imageUrl ? [{ url: m.imageUrl, publicId: String(m._id) }] : []),
       ...(m.galleryImages ?? []).map((image) => ({ url: image.url, publicId: image.publicId ?? "" })),
     ]).map((image) => [image.url, image])).values()],
+    youtubeUrls: rep.youtubeUrls ?? members.find((m) => m.youtubeUrls?.length)?.youtubeUrls ?? [],
   };
 }
 
