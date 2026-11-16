@@ -39,9 +39,9 @@ function ProductCard({ p }: { p: PortalProduct }) {
 
   return (
     <Card className="gap-3 p-3">
-      <Link href={`/shop/products/${p._id}`} className="block" aria-label={`View details for ${p.name}`}>
+      <div>
         <ProductGallery name={p.name} images={images} />
-      </Link>
+      </div>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <Link href={`/shop/products/${p._id}`} className="truncate font-medium hover:text-primary">{p.name}</Link>
