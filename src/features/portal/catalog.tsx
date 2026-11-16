@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { Search, ShoppingCart, X } from "lucide-react";
+import { Plus, Search, ShoppingCart, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,35 +24,62 @@ function Availability({ p }: { p: PortalProduct }) {
 }
 
 function ProductCard({ p }: { p: PortalProduct }) {
+  const router = useRouter();
+  const add = usePortalCart((s) => s.add);
   const images = p.images?.length
     ? p.images
     : p.imageUrl
       ? [{ url: p.imageUrl, publicId: "" }]
       : [];
+  const out = p.available <= 0;
 
   return (
-    <Link href={`/shop/products/${p._id}`} className="block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label={`View ${p.name} product details`}>
-      <Card className="h-full gap-3 p-3 transition-colors hover:border-primary/50">
-        {images.length > 1 ? (
-          <div className="grid grid-cols-2 gap-2">
-            {images.slice(0, 2).map((image, index) => (
-              <img key={`${image.publicId}-${index}`} src={image.url} alt={`${p.name} ${index + 1}`} className="aspect-square w-full rounded-lg bg-muted object-contain" />
-            ))}
-          </div>
-        ) : images.length === 1 ? (
-          <img src={images[0].url} alt={p.name} className="aspect-square w-full rounded-lg bg-muted object-contain" />
-        ) : (
-          <div className="flex aspect-square items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">No image</div>
-        )}
-        <div className="min-w-0 space-y-1">
-          <p className="line-clamp-2 min-h-10 font-medium leading-5">{p.name}</p>
-          <p className="text-xs text-muted-foreground">{p.code}</p>
-          {p.group && <Badge variant="outline">{p.group}</Badge>}
-          <p className="pt-1 text-base font-bold">{formatMoney(p.price)}</p>
-          <p className="text-xs"><Availability p={p} /></p>
+    <Card
+      className="flex h-full cursor-pointer flex-col gap-3 overflow-hidden p-3 transition-colors hover:border-primary/50 hover:shadow-md"
+      onClick={() => router.push(`/shop/products/${p._id}`)}
+      role="link"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          router.push(`/shop/products/${p._id}`);
+        }
+      }}
+      aria-label={`View ${p.name} product details`}
+    >
+      {images.length > 1 ? (
+        <div className="grid grid-cols-2 gap-2">
+          {images.slice(0, 2).map((image, index) => (
+            <img key={`${image.publicId}-${index}`} src={image.url} alt={`${p.name} ${index + 1}`} className="aspect-square w-full rounded-lg bg-muted object-contain" />
+          ))}
         </div>
-      </Card>
-    </Link>
+      ) : images.length === 1 ? (
+        <img src={images[0].url} alt={p.name} className="aspect-square w-full rounded-lg bg-muted object-contain" />
+      ) : (
+        <div className="flex aspect-square items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">No image</div>
+      )}
+      <div className="min-w-0 space-y-1">
+        <p className="line-clamp-2 min-h-10 font-medium leading-5">{p.name}</p>
+        <p className="text-xs text-muted-foreground">{p.code}</p>
+        {p.group && <Badge variant="outline">{p.group}</Badge>}
+        <p className="pt-1 text-base font-bold">{formatMoney(p.price)}</p>
+        <p className="text-xs"><Availability p={p} /></p>
+      </div>
+      <div className="mt-auto flex justify-end">
+        <Button
+          size="icon"
+          className="size-10 shrink-0 rounded-full"
+          disabled={out}
+          aria-label={`Add ${p.name} to cart`}
+          onClick={(event) => {
+            event.stopPropagation();
+            add({ productId: p._id, name: p.name, code: p.code, price: p.price, max: p.available });
+          }}
+        >
+          <Plus className="size-5" />
+        </Button>
+      </div>
+    </Card>
   );
 }
 
