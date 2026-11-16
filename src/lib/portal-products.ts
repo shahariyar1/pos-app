@@ -4,10 +4,10 @@ import { Product } from "@/models/product";
  * The same product can sit on two shelves (two stock records with the same name, code, group and price).
  * Customers should see ONE item with the combined stock, so these helpers merge such records.
  */
-export const SELECT = "name code group salePrice stock lowStockThreshold imageUrl galleryImages";
+export const SELECT = "name code group salePrice stock lowStockThreshold imageUrl galleryImages youtubeUrls";
 
-export type Lean = { _id: unknown; name: string; code: string; group?: string | null; salePrice: number; stock: number; lowStockThreshold?: number | null; imageUrl?: string | null; galleryImages?: { url: string }[]; };
-export type PortalView = { _id: string; name: string; code: string; group: string; price: number; available: number; low: boolean; imageUrl?: string; images: { url: string; publicId: string }[] };
+export type Lean = { _id: unknown; name: string; code: string; group?: string | null; salePrice: number; stock: number; lowStockThreshold?: number | null; imageUrl?: string | null; galleryImages?: { url: string; publicId?: string }[]; youtubeUrls?: string[]; };
+export type PortalView = { _id: string; name: string; code: string; group: string; price: number; available: number; low: boolean; imageUrl?: string; images: { url: string; publicId: string }[]; youtubeUrls: string[] };
 
 export const keyOf = (p: Pick<Lean, "name" | "code" | "group" | "salePrice">) =>
   `${p.name.toLowerCase()}|${p.code.toLowerCase()}|${(p.group ?? "").toLowerCase()}|${p.salePrice}`;
@@ -36,7 +36,7 @@ export function toView(rep: Lean, members: Lean[]): PortalView {
     imageUrl: rep.imageUrl || members.find((m) => m.imageUrl)?.imageUrl || rep.galleryImages?.[0]?.url || members.find((m) => m.galleryImages?.length)?.galleryImages?.[0]?.url || undefined,
     images: [...new Map(members.flatMap((m) => [
       ...(m.imageUrl ? [{ url: m.imageUrl, publicId: String(m._id) }] : []),
-      ...(m.galleryImages ?? []),
+      ...(m.galleryImages ?? []).map((image) => ({ url: image.url, publicId: image.publicId ?? "" })),
     ]).map((image) => [image.url, image])).values()],
   };
 }
