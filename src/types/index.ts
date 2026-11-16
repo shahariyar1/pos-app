@@ -148,7 +148,7 @@ export type DamageRow = {
 export type DamageResponse = { data: DamageRow[]; totalQty: number; totalRefund: number; totalCost?: number; unlocked: boolean };
 
 /* ---------- Customer portal ---------- */
-export type PortalProduct = { _id: string; name: string; code: string; group: string; price: number; available: number; low: boolean };
+export type PortalProduct = { _id: string; name: string; code: string; group: string; price: number; available: number; low: boolean; imageUrl?: string; images: { url: string; publicId: string }[]; youtubeUrls: string[] };
 export type PortalProducts = { data: PortalProduct[]; total: number; groups: string[]; regulars: PortalProduct[] };
 export type PortalMe = { shopName: string; address: string; phone: string; status: "pending" | "active" | "blocked"; due: number | null };
 
