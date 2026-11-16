@@ -48,7 +48,7 @@ export function CustomerProductDetails({ id }: { id: string }) {
       if (["youtube.com", "www.youtube.com", "m.youtube.com"].includes(url.hostname)) {
         if (url.pathname === "/watch") return url.searchParams.get("v");
 
-        return url.pathname.match(/^\\/(shorts|embed)\\/([^/?]+)/)?.[2] ?? null;
+        return url.pathname.match(/^\/(shorts|embed)\/([^/?]+)/)?.[2] ?? null;
       }
     } catch {
       return null;
