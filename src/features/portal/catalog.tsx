@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import useSWR from "swr";
-import { Plus, Search, ShoppingCart, X } from "lucide-react";
+import { Search, ShoppingCart, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,7 +16,6 @@ import { cn, formatMoney, round2 } from "@/lib/utils";
 import { portalCount, portalTotal, usePortalCart } from "@/stores/portal-cart";
 import type { PortalProduct, PortalProducts } from "@/types";
 import { ProductGallery } from "@/features/inventory/product-gallery";
-import { QtyStepper } from "./qty-stepper";
 
 function Availability({ p }: { p: PortalProduct }) {
   if (p.available <= 0) return <span className="font-medium text-destructive">Out of stock</span>;
@@ -25,12 +24,6 @@ function Availability({ p }: { p: PortalProduct }) {
 }
 
 function ProductCard({ p }: { p: PortalProduct }) {
-  const line = usePortalCart((s) => s.items.find((i) => i.productId === p._id));
-  const add = usePortalCart((s) => s.add);
-  const setQty = usePortalCart((s) => s.setQty);
-  const mounted = useMounted();
-  const inCart = mounted ? line : undefined;
-  const out = p.available <= 0;
   const images = p.images?.length
     ? p.images
     : p.imageUrl
@@ -38,32 +31,18 @@ function ProductCard({ p }: { p: PortalProduct }) {
       : [];
 
   return (
-    <Card className="gap-3 p-3">
-      <div>
+    <Link href={`/shop/products/${p._id}`} className="block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label={`View ${p.name} product details`}>
+      <Card className="h-full gap-3 p-3 transition-colors hover:border-primary/50">
         <ProductGallery name={p.name} images={images} />
-      </div>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <Link href={`/shop/products/${p._id}`} className="truncate font-medium hover:text-primary">{p.name}</Link>
-          <p className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-            <span>{p.code}</span>
-            <Link href={`/shop/products/${p._id}`} className="underline underline-offset-2">Details</Link>
-            {p.group && <Badge variant="outline">{p.group}</Badge>}
-          </p>
+        <div className="min-w-0 space-y-1">
+          <p className="line-clamp-2 min-h-10 font-medium leading-5">{p.name}</p>
+          <p className="text-xs text-muted-foreground">{p.code}</p>
+          {p.group && <Badge variant="outline">{p.group}</Badge>}
+          <p className="pt-1 text-base font-bold">{formatMoney(p.price)}</p>
+          <p className="text-xs"><Availability p={p} /></p>
         </div>
-        <p className="shrink-0 font-semibold">{formatMoney(p.price)}</p>
-      </div>
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs"><Availability p={p} /></span>
-        {inCart ? (
-          <QtyStepper value={inCart.qty} max={p.available} label={p.name} onChange={(n) => (n <= 0 ? setQty(p._id, 0) : setQty(p._id, n))} />
-        ) : (
-          <Button size="sm" disabled={out} aria-label={`Add ${p.name} to cart`} onClick={() => add({ productId: p._id, name: p.name, code: p.code, price: p.price, max: p.available })}>
-            <Plus className="size-4" aria-hidden /> Add
-          </Button>
-        )}
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 }
 
@@ -102,11 +81,11 @@ export function Catalog() {
 
       {isLoading ? (
         <div className="grid grid-cols-2 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-56 rounded-xl" />)}
         </div>
       ) : data?.data.length ? (
         <ul className="grid grid-cols-2 gap-3">
-          {data.data.map((p) => <li key={p._id}><ProductCard p={p} /></li>)}
+          {data.data.map((p) => <li key={p._id} className="min-w-0"><ProductCard p={p} /></li>)}
         </ul>
       ) : (
         <p className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">No product matches “{q}”.</p>
