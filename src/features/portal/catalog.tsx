@@ -15,7 +15,6 @@ import { fetcher, qs } from "@/lib/fetcher";
 import { cn, formatMoney, round2 } from "@/lib/utils";
 import { portalCount, portalTotal, usePortalCart } from "@/stores/portal-cart";
 import type { PortalProduct, PortalProducts } from "@/types";
-import { ProductGallery } from "@/features/inventory/product-gallery";
 
 function Availability({ p }: { p: PortalProduct }) {
   if (p.available <= 0) return <span className="font-medium text-destructive">Out of stock</span>;
@@ -33,7 +32,17 @@ function ProductCard({ p }: { p: PortalProduct }) {
   return (
     <Link href={`/shop/products/${p._id}`} className="block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label={`View ${p.name} product details`}>
       <Card className="h-full gap-3 p-3 transition-colors hover:border-primary/50">
-        <ProductGallery name={p.name} images={images} />
+        {images.length > 1 ? (
+          <div className="grid grid-cols-2 gap-2">
+            {images.slice(0, 2).map((image, index) => (
+              <img key={`${image.publicId}-${index}`} src={image.url} alt={`${p.name} ${index + 1}`} className="aspect-square w-full rounded-lg bg-muted object-contain" />
+            ))}
+          </div>
+        ) : images.length === 1 ? (
+          <img src={images[0].url} alt={p.name} className="aspect-square w-full rounded-lg bg-muted object-contain" />
+        ) : (
+          <div className="flex aspect-square items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">No image</div>
+        )}
         <div className="min-w-0 space-y-1">
           <p className="line-clamp-2 min-h-10 font-medium leading-5">{p.name}</p>
           <p className="text-xs text-muted-foreground">{p.code}</p>
