@@ -31,11 +31,13 @@ function ProductCard({ product, returnTo }: { product: Product; returnTo: string
   const addProduct = useCart((s) => s.addProduct);
   const out = product.stock <= 0;
   const low = !out && product.stock <= product.lowStockThreshold;
+  const detailUrl = `/products/${product._id}?returnTo=${encodeURIComponent(returnTo)}`;
 
   return (
     <Card
       className="flex h-full cursor-pointer flex-col gap-2 overflow-hidden p-2 transition-shadow hover:shadow-md"
-      onClick={() => router.push(`/products/${product._id}?returnTo=${encodeURIComponent(returnTo)}`)}
+      onPointerEnter={() => router.prefetch(detailUrl)}
+      onClick={() => router.push(detailUrl)}
     >
       {product.imageUrl ? (
         <img
