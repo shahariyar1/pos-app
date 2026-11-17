@@ -79,6 +79,7 @@ export default async function ProductDetailsPage({
             <div className="flex items-center gap-3">
                 <Link
                     href={returnTo}
+                    prefetch
                     className="flex size-10 items-center justify-center rounded-lg border hover:bg-muted"
                 >
                     <ArrowLeft className="size-4" />
@@ -179,6 +180,7 @@ export default async function ProductDetailsPage({
                                 <iframe
                                     key={`${videoId}-${index}`}
                                     src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                                    loading="lazy"
                                     title={`Product Video ${index + 1}`}
                                     className="aspect-video w-full rounded-lg"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
