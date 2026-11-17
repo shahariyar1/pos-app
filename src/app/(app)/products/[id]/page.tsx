@@ -45,10 +45,16 @@ function getYouTubeVideoId(value: string) {
 
 export default async function ProductDetailsPage({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams: Promise<{ returnTo?: string }>;
 }) {
     const { id } = await params;
+    const { returnTo: requestedReturnTo } = await searchParams;
+    const returnTo = requestedReturnTo?.startsWith("/pos") && !requestedReturnTo.startsWith("//")
+        ? requestedReturnTo
+        : "/pos";
 
     await connectDB();
 
@@ -72,7 +78,8 @@ export default async function ProductDetailsPage({
         <div className="mx-auto max-w-5xl space-y-5">
             <div className="flex items-center gap-3">
                 <Link
-                    href="/pos"
+                    href={returnTo}
+                    prefetch
                     className="flex size-10 items-center justify-center rounded-lg border hover:bg-muted"
                 >
                     <ArrowLeft className="size-4" />
@@ -173,6 +180,7 @@ export default async function ProductDetailsPage({
                                 <iframe
                                     key={`${videoId}-${index}`}
                                     src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                                    loading="lazy"
                                     title={`Product Video ${index + 1}`}
                                     className="aspect-video w-full rounded-lg"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -18,16 +18,26 @@ import type { Product, ProductsResponse } from "@/types";
 import { MemoPanel } from "./memo-panel";
 import { useRouter } from "next/navigation";
 
-function ProductCard({ product }: { product: Product }) {
+function buildSellReturnUrl(query: string, group: string | null) {
+  const params = new URLSearchParams();
+  if (query.trim()) params.set("q", query.trim());
+  if (group) params.set("g", group);
+  const search = params.toString();
+  return search ? `/pos?${search}` : "/pos";
+}
+
+function ProductCard({ product, returnTo }: { product: Product; returnTo: string }) {
   const router = useRouter();
   const addProduct = useCart((s) => s.addProduct);
   const out = product.stock <= 0;
   const low = !out && product.stock <= product.lowStockThreshold;
+  const detailUrl = `/products/${product._id}?returnTo=${encodeURIComponent(returnTo)}`;
 
   return (
     <Card
       className="flex h-full cursor-pointer flex-col gap-2 overflow-hidden p-2 transition-shadow hover:shadow-md"
-      onClick={() => router.push(`/products/${product._id}`)}
+      onPointerEnter={() => router.prefetch(detailUrl)}
+      onClick={() => router.push(detailUrl)}
     >
       {product.imageUrl ? (
         <img
@@ -79,6 +89,7 @@ function ProductCard({ product }: { product: Product }) {
           className="size-10 shrink-0 rounded-full"
           disabled={out}
           aria-label={`Add ${product.name} ${product.code} to memo`}
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
             addProduct(product);
@@ -91,9 +102,9 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-export function PosScreen({ initialQuery }: { initialQuery: string }) {
+export function PosScreen({ initialQuery, initialGroup }: { initialQuery: string; initialGroup?: string }) {
   const [q, setQ] = useState(initialQuery);
-  const [group, setGroup] = useState<string | null>(null);
+  const [group, setGroup] = useState<string | null>(initialGroup ?? null);
   const [memoOpen, setMemoOpen] = useState(false);
   const [limit, setLimit] = useState(60);
   const [scrollToIndex, setScrollToIndex] = useState<number | null>(null);
@@ -164,7 +175,7 @@ export function PosScreen({ initialQuery }: { initialQuery: string }) {
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {data.data.map((p, index) => (
               <li key={p._id} ref={index === scrollToIndex ? newProductsRef : undefined}>
-                <ProductCard product={p} />
+                <ProductCard product={p} returnTo={buildSellReturnUrl(q, group)} />
               </li>
             ))}
           </ul>
