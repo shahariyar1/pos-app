@@ -177,15 +177,11 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center justify-between border-b px-3 py-2">
-        <div>
-          <h2 className="text-lg font-semibold">Memo</h2>
-          <p className="text-xs text-muted-foreground">{SHOP_NAME}</p>
-        </div>
+      <div className="flex items-center justify-start gap-3 border-b px-3 py-2">
         {items.length > 0 && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+              <Button variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive">
                 <Trash2 className="size-4" aria-hidden /> Discard
               </Button>
             </AlertDialogTrigger>
@@ -201,6 +197,10 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
             </AlertDialogContent>
           </AlertDialog>
         )}
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold">Memo</h2>
+          <p className="text-xs text-muted-foreground">{SHOP_NAME}</p>
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2">
