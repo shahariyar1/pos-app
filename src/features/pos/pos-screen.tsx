@@ -56,12 +56,6 @@ function ProductCard({ product, returnTo }: { product: Product; returnTo: string
           {product.name}
         </p>
 
-        {product.matchedCompatibleModels && product.matchedCompatibleModels.length > 0 && (
-          <p className="line-clamp-2 text-xs font-medium text-primary">
-            Matches: {product.matchedCompatibleModels.join(", ")}
-          </p>
-        )}
-
         <p className="truncate text-xs text-muted-foreground">
           {product.code}
         </p>
@@ -69,6 +63,12 @@ function ProductCard({ product, returnTo }: { product: Product; returnTo: string
         {product.location && (
           <p className="text-xs font-medium text-primary">
             Location: {product.location}
+          </p>
+        )}
+
+        {product.matchedCompatibleModels && product.matchedCompatibleModels.length > 0 && (
+          <p className="line-clamp-2 text-xs font-medium text-primary">
+            Compatible: {product.matchedCompatibleModels.join(", ")}
           </p>
         )}
 
