@@ -277,8 +277,8 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
                   const file = e.target.files?.[0];
                   if (!file) return;
 
-                  if (file.size > 5 * 1024 * 1024) {
-                    toast.error("Image must be under 5MB");
+                  if (file.size > 4 * 1024 * 1024) {
+                    toast.error("Image must be under 4MB");
                     e.target.value = "";
                     return;
                   }
@@ -329,8 +329,11 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
                     return;
                   }
 
-                  if (selected.some((file) => file.size > 5 * 1024 * 1024)) {
-                    toast.error("Each image must be under 5MB");
+                  if (
+                    selected.some((file) => file.size > 4 * 1024 * 1024) ||
+                    selected.reduce((total, file) => total + file.size, 0) > 4 * 1024 * 1024
+                  ) {
+                    toast.error("Selected gallery images must total under 4MB");
                     e.target.value = "";
                     return;
                   }
@@ -398,7 +401,7 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
               </div>
 
               <p className="text-xs text-muted-foreground">
-                Maximum 10 additional photos. Each image must be under 5MB.
+                Maximum 10 additional photos. Each image must be under 4MB.
               </p>
             </div>
           </Field>
