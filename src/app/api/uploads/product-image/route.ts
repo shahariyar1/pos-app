@@ -25,8 +25,8 @@ export const POST = withApi(async (req) => {
     throw new HttpError(400, "Only JPG, PNG and WebP images are allowed");
   }
 
-  if (file.size > 5 * 1024 * 1024) {
-    throw new HttpError(400, "Image size must be under 5MB");
+  if (file.size > 4 * 1024 * 1024) {
+    throw new HttpError(400, "Image size must be under 4MB");
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
