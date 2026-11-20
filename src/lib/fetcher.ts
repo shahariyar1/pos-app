@@ -3,6 +3,33 @@ import { mutate } from "swr";
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
     super(message);
+    this.name = "ApiError";
+  }
+}
+
+function responseMessage(text: string, url: string, status: number) {
+  if (!text.trim()) return `Empty server response (HTTP ${status}) from ${url}`;
+
+  try {
+    const data = JSON.parse(text);
+    if (typeof data?.error === "string" && data.error.trim()) return data.error;
+    if (typeof data?.message === "string" && data.message.trim()) return data.message;
+    return `Request failed (HTTP ${status}) from ${url}`;
+  } catch {
+    // Vercel/proxy failures can return HTML or plain text instead of JSON.
+    const readable = text
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 280);
+
+    return readable
+      ? `Server returned a non-JSON response (HTTP ${status}) from ${url}: ${readable}`
+      : `Server returned a non-JSON response (HTTP ${status}) from ${url}`;
   }
 }
 
@@ -11,15 +38,28 @@ export async function api<T>(url: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
-  const data = await res.json().catch(() => null);
+
+  const responseText = await res.text();
+
   if (res.status === 401 && typeof window !== "undefined") {
     const here = window.location.pathname;
     if (!here.startsWith("/login") && !here.startsWith("/owner-login")) {
       window.location.href = here.startsWith("/shop") ? "/login" : "/owner-login";
     }
   }
-  if (!res.ok) throw new ApiError(data?.error ?? "Request failed", res.status);
-  return data as T;
+
+  let data: T;
+  try {
+    data = responseText ? (JSON.parse(responseText) as T) : (null as T);
+  } catch {
+    throw new ApiError(responseMessage(responseText, url, res.status), res.status);
+  }
+
+  if (!res.ok) {
+    throw new ApiError(responseMessage(responseText, url, res.status), res.status);
+  }
+
+  return data;
 }
 
 export const fetcher = <T>(url: string) => api<T>(url);
