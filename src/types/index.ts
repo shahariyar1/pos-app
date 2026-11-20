@@ -22,6 +22,8 @@ export type Product = {
   updatedAt: string;
   familyCode: string;
   compatibleModels: string[];
+  /** Compatible model entries that matched the current POS search. */
+  matchedCompatibleModels?: string[];
 };
 export type ProductsResponse = { data: Product[]; total: number; locations: string[]; groups: string[]; unlocked: boolean };
 
