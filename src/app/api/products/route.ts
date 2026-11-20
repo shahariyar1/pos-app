@@ -72,8 +72,17 @@ export const GET = withApi(async (req) => {
     Product.distinct("group", { isActive: true }),
   ]);
 
+  const dataWithMatches = data.map((product) => ({
+    ...product,
+    matchedCompatibleModels: q
+      ? (product.compatibleModels ?? []).filter((model) =>
+          q.split(/\\s+/).filter(Boolean).every((token) => rx(token).test(model))
+        )
+      : [],
+  }));
+
   return NextResponse.json({
-    data,
+    data: dataWithMatches,
     total,
     locations: locations.filter(Boolean).sort(),
     groups: groups.filter(Boolean).sort(),
