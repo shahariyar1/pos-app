@@ -3,6 +3,7 @@ import { mutate } from "swr";
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
     super(message);
+    this.name = "ApiError";
   }
 }
 
@@ -11,14 +12,44 @@ export async function api<T>(url: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
-  const data = await res.json().catch(() => null);
+
+  // Read once as text: some hosting/proxy errors are plain text or HTML,
+  // not JSON. Preserve that response instead of throwing a JSON parse error.
+  const responseText = await res.text();
+  let data: unknown = null;
+  if (responseText) {
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      data = null;
+    }
+  }
+
   if (res.status === 401 && typeof window !== "undefined") {
     const here = window.location.pathname;
     if (!here.startsWith("/login") && !here.startsWith("/owner-login")) {
       window.location.href = here.startsWith("/shop") ? "/login" : "/owner-login";
     }
   }
-  if (!res.ok) throw new ApiError(data?.error ?? "Request failed", res.status);
+
+  if (!res.ok) {
+    const apiMessage =
+      typeof data === "object" && data !== null && "error" in data &&
+      typeof (data as { error?: unknown }).error === "string"
+        ? (data as { error: string }).error
+        : null;
+    const message = apiMessage ?? (
+      responseText && responseText.length < 300
+        ? responseText
+        : `Request failed (HTTP ${res.status}). Please try again.`
+    );
+    throw new ApiError(message, res.status);
+  }
+
+  if (!responseText) return undefined as T;
+  if (data === null) {
+    throw new ApiError(`Server returned an invalid response (HTTP ${res.status}).`, res.status);
+  }
   return data as T;
 }
 
