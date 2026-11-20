@@ -66,6 +66,12 @@ function ProductCard({ product, returnTo }: { product: Product; returnTo: string
           </p>
         )}
 
+        {product.matchedCompatibleModels && product.matchedCompatibleModels.length > 0 && (
+          <p className="line-clamp-2 text-xs font-medium text-primary">
+            Compatible: {product.matchedCompatibleModels.join(", ")}
+          </p>
+        )}
+
         <div className="flex flex-wrap items-center gap-1">
           <Badge variant="secondary">
             {out ? "Out of stock" : `${product.stock} in stock`}
