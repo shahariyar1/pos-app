@@ -56,6 +56,12 @@ function ProductCard({ product, returnTo }: { product: Product; returnTo: string
           {product.name}
         </p>
 
+        {product.matchedCompatibleModels && product.matchedCompatibleModels.length > 0 && (
+          <p className="line-clamp-2 text-xs font-medium text-primary">
+            Matches: {product.matchedCompatibleModels.join(", ")}
+          </p>
+        )}
+
         <p className="truncate text-xs text-muted-foreground">
           {product.code}
         </p>
