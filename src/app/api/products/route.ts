@@ -76,7 +76,7 @@ export const GET = withApi(async (req) => {
     ...product,
     matchedCompatibleModels: q
       ? (product.compatibleModels ?? []).filter((model) =>
-          q.split(/\\s+/).filter(Boolean).every((token) => rx(token).test(model))
+          q.split(/\s+/).filter(Boolean).every((token) => rx(token).test(model))
         )
       : [],
   }));
