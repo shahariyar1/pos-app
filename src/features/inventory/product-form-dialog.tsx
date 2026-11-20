@@ -30,6 +30,63 @@ const EMPTY: ProductFormValues = {
   warrantyDays: 0,
 };
 
+async function uploadImageDirectly(file: File, folder: string) {
+  const signatureResponse = await fetch("/api/uploads/signature", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ folder }),
+  });
+
+  const signatureText = await signatureResponse.text();
+  let signatureData: Record<string, string | number> = {};
+  try {
+    signatureData = signatureText ? JSON.parse(signatureText) : {};
+  } catch {
+    throw new Error(
+      signatureText || `Could not prepare image upload (HTTP ${signatureResponse.status})`,
+    );
+  }
+
+  if (!signatureResponse.ok) {
+    throw new Error(
+      String(signatureData.error ?? signatureText ?? "Could not prepare image upload"),
+    );
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", String(signatureData.apiKey));
+  formData.append("timestamp", String(signatureData.timestamp));
+  formData.append("folder", String(signatureData.folder));
+  formData.append("signature", String(signatureData.signature));
+
+  const cloudinaryResponse = await fetch(
+    `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+    { method: "POST", body: formData },
+  );
+  const responseText = await cloudinaryResponse.text();
+  let uploadData: Record<string, string> = {};
+  try {
+    uploadData = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    throw new Error(
+      responseText || `Image upload failed (HTTP ${cloudinaryResponse.status})`,
+    );
+  }
+
+  if (!cloudinaryResponse.ok) {
+    const cloudinaryError = uploadData.error as unknown as { message?: string } | undefined;
+    throw new Error(
+      cloudinaryError?.message ?? "Image upload failed. Please try again.",
+    );
+  }
+
+  return {
+    url: uploadData.secure_url,
+    publicId: uploadData.public_id,
+  };
+}
+
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -119,27 +176,11 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
       let nextImageUrl = imagePreview ? (product?.imageUrl ?? "") : "";
       let nextImagePublicId = imagePreview ? imagePublicId : "";
 
-      // Upload new image to Cloudinary
+      // Upload directly to Cloudinary so image bytes never pass through Vercel.
       if (imageFile) {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-
-        const uploadResponse = await fetch(
-          "/api/uploads/product-image",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-
-        const uploadData = await uploadResponse.json();
-
-        if (!uploadResponse.ok) {
-          throw new Error(uploadData?.error ?? "Image upload failed");
-        }
-
-        nextImageUrl = uploadData.imageUrl;
-        nextImagePublicId = uploadData.publicId;
+        const uploadedImage = await uploadImageDirectly(imageFile, "pos-products");
+        nextImageUrl = uploadedImage.url;
+        nextImagePublicId = uploadedImage.publicId;
       }
       // Upload additional gallery images
       let uploadedGalleryImages = galleryPreviews
@@ -147,31 +188,16 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
         .map(({ url, publicId }) => ({ url, publicId }));
 
       if (galleryFiles.length > 0) {
-        const galleryFormData = new FormData();
-
-        galleryFiles.forEach((file) => {
-          galleryFormData.append("images", file);
-        });
-
-        const galleryResponse = await fetch(
-          "/api/uploads/product-gallery",
-          {
-            method: "POST",
-            body: galleryFormData,
-          }
-        );
-
-        const galleryData = await galleryResponse.json();
-
-        if (!galleryResponse.ok) {
-          throw new Error(
-            galleryData?.error ?? "Gallery image upload failed"
+        const newlyUploadedImages = [];
+        for (const file of galleryFiles) {
+          newlyUploadedImages.push(
+            await uploadImageDirectly(file, "pos-products/gallery"),
           );
         }
 
         uploadedGalleryImages = [
           ...uploadedGalleryImages,
-          ...galleryData.galleryImages,
+          ...newlyUploadedImages,
         ];
       }
       const payload = {
