@@ -12,7 +12,7 @@ export type Product = {
   location: string;
   group: string;
   warrantyDays?: number;
-  /** Only present after the PIN unlock. */
+  /** Product acquisition cost. */
   costPrice?: number;
   salePrice: number;
   stock: number;
@@ -140,7 +140,7 @@ export type DamageRow = {
   qty: number;
   /** What the customer got back for it. */
   refundAmount: number;
-  /** What the broken goods cost you. Only present after the PIN unlock. */
+  /** What the broken goods cost you. */
   costValue?: number;
   invoiceNo: string;
   customerName: string;
