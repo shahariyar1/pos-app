@@ -96,7 +96,7 @@ type Props = {
 
 export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: Props) {
   const isEdit = !!product;
-  const showCost = !isEdit || canEditCost;
+  const showCost = true;
 
   const {
     register,
@@ -511,7 +511,7 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
             </Field>
           ) : (
             <p className="self-end pb-2 text-sm text-muted-foreground">
-              Cost price is hidden. Unlock on the Dashboard to edit it.
+              Cost price is unavailable.
             </p>
           )}
 
