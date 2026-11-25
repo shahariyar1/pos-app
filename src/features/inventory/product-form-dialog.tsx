@@ -87,6 +87,25 @@ async function uploadImageDirectly(file: File, folder: string) {
   };
 }
 
+// Upload a few images at a time instead of waiting for each upload serially.
+// A small concurrency limit keeps mobile browsers and slower networks responsive.
+async function uploadImagesInParallel(files: File[], folder: string) {
+  const results = new Array<{ url: string; publicId: string }>(files.length);
+  let nextIndex = 0;
+  const workerCount = Math.min(3, files.length);
+
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (nextIndex < files.length) {
+        const index = nextIndex++;
+        results[index] = await uploadImageDirectly(files[index], folder);
+      }
+    }),
+  );
+
+  return results;
+}
+
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -174,30 +193,26 @@ export function ProductFormDialog({ open, onOpenChange, product }: Props) {
       let nextImageUrl = imagePreview ? (product?.imageUrl ?? "") : "";
       let nextImagePublicId = imagePreview ? imagePublicId : "";
 
-      // Upload directly to Cloudinary so image bytes never pass through Vercel.
-      if (imageFile) {
-        const uploadedImage = await uploadImageDirectly(imageFile, "pos-products");
-        nextImageUrl = uploadedImage.url;
-        nextImagePublicId = uploadedImage.publicId;
-      }
-      // Upload additional gallery images
-      let uploadedGalleryImages = galleryPreviews
-        .filter((image) => !image.isNew)
-        .map(({ url, publicId }) => ({ url, publicId }));
+      // Upload the main image and gallery images concurrently.
+      // Gallery uploads use a bounded pool to avoid overwhelming mobile connections.
+      const [uploadedMainImage, newlyUploadedImages] = await Promise.all([
+        imageFile
+          ? uploadImageDirectly(imageFile, "pos-products")
+          : Promise.resolve(null),
+        uploadImagesInParallel(galleryFiles, "pos-products/gallery"),
+      ]);
 
-      if (galleryFiles.length > 0) {
-        const newlyUploadedImages = [];
-        for (const file of galleryFiles) {
-          newlyUploadedImages.push(
-            await uploadImageDirectly(file, "pos-products/gallery"),
-          );
-        }
-
-        uploadedGalleryImages = [
-          ...uploadedGalleryImages,
-          ...newlyUploadedImages,
-        ];
+      if (uploadedMainImage) {
+        nextImageUrl = uploadedMainImage.url;
+        nextImagePublicId = uploadedMainImage.publicId;
       }
+
+      const uploadedGalleryImages = [
+        ...galleryPreviews
+          .filter((image) => !image.isNew)
+          .map(({ url, publicId }) => ({ url, publicId })),
+        ...newlyUploadedImages,
+      ];
       const payload = {
         ...values,
         familyCode: values.familyCode?.trim() ?? "",
