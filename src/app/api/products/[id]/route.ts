@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { withApi, HttpError } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { objectId, productUpdateSchema } from "@/lib/validations";
 import { logReceipt } from "@/lib/warranty";
 import { Product } from "@/models/product";
@@ -10,9 +9,6 @@ type Ctx = { params: Promise<{ id: string }> };
 export const PATCH = withApi<Ctx>(async (req, { params }) => {
   const id = objectId.parse((await params).id);
   const body = productUpdateSchema.parse(await req.json());
-  if (body.costPrice !== undefined && !(await isUnlocked())) {
-    throw new HttpError(403, "Unlock with the PIN to change cost price");
-  }
   const before = await Product.findById(id).select("stock").lean();
   const product = await Product.findByIdAndUpdate(id, body, { new: true, runValidators: true });
   if (!product || !before) throw new HttpError(404, "Product not found");
