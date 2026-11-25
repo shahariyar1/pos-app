@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { withApi, HttpError, parseDate, rx, type MongoFilter } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { round2 } from "@/lib/utils";
 import { checkoutSchema, objectId } from "@/lib/validations";
 import { Customer } from "@/models/customer";
@@ -29,12 +28,10 @@ export const GET = withApi(async (req) => {
   const q = sp.get("q")?.trim();
   if (q) filter.$or = [{ invoiceNo: rx(q) }, { customerName: rx(q) }];
 
-  const unlocked = await isUnlocked();
   const query = Sale.find(filter).sort({ createdAt: -1 }).limit(Math.min(Number(sp.get("limit")) || 500, 1000));
-  if (!unlocked) query.select("-items.costPrice");
 
   const [data, total] = await Promise.all([query.lean(), Sale.countDocuments(filter)]);
-  return NextResponse.json({ data, total, unlocked });
+  return NextResponse.json({ data, total, unlocked: true });
 });
 
 /**

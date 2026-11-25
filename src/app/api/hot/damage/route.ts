@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { withApi, HttpError, parseDate, rx, type MongoFilter } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { Product } from "@/models/product";
 import { Return } from "@/models/return";
 
@@ -25,7 +24,6 @@ export const GET = withApi(async (req) => {
     }));
   }
 
-  const unlocked = await isUnlocked();
   const rows = await Return.find(filter).sort({ createdAt: -1 }).limit(300).lean();
 
   const ids = rows.map((r) => r.product).filter(Boolean);
@@ -40,7 +38,7 @@ export const GET = withApi(async (req) => {
     group: r.product ? (groupById.get(String(r.product)) ?? "") : "",
     qty: r.qty,
     refundAmount: r.refundAmount,
-    ...(unlocked ? { costValue: round2(r.costPrice * r.qty) } : {}),
+    costValue: round2(r.costPrice * r.qty),
     invoiceNo: r.invoiceNo ?? "",
     customerName: r.customerName ?? "",
     reason: r.reason ?? "",
@@ -51,7 +49,7 @@ export const GET = withApi(async (req) => {
     data,
     totalQty: data.reduce((n, r) => n + r.qty, 0),
     totalRefund: round2(data.reduce((n, r) => n + r.refundAmount, 0)),
-    ...(unlocked ? { totalCost: round2(data.reduce((n, r) => n + (r.costValue ?? 0), 0)) } : {}),
-    unlocked,
+    totalCost: round2(data.reduce((n, r) => n + r.costValue, 0)),
+    unlocked: true,
   });
 });

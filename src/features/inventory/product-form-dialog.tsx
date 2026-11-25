@@ -91,12 +91,10 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product: Product | null;
-  canEditCost: boolean;
 };
 
-export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: Props) {
+export function ProductFormDialog({ open, onOpenChange, product }: Props) {
   const isEdit = !!product;
-  const showCost = !isEdit || canEditCost;
 
   const {
     register,
@@ -214,10 +212,6 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
         youtubeUrls: youtubeUrls,
 
       };
-
-      if (!showCost) {
-        delete (payload as Partial<typeof payload>).costPrice;
-      }
 
       await api(
         isEdit ? `/api/products/${product!._id}` : "/api/products",
@@ -505,15 +499,9 @@ export function ProductFormDialog({ open, onOpenChange, product, canEditCost }: 
               </div>
             ))}
           </div>
-          {showCost ? (
-            <Field label="Cost price" htmlFor="p-cost" error={errors.costPrice?.message}>
-              <Input id="p-cost" type="number" step="0.01" min="0" {...register("costPrice", num)} />
-            </Field>
-          ) : (
-            <p className="self-end pb-2 text-sm text-muted-foreground">
-              Cost price is hidden. Unlock on the Dashboard to edit it.
-            </p>
-          )}
+          <Field label="Cost price" htmlFor="p-cost" error={errors.costPrice?.message}>
+            <Input id="p-cost" type="number" step="0.01" min="0" {...register("costPrice", num)} />
+          </Field>
 
           <Field label="Sale price" htmlFor="p-sale" error={errors.salePrice?.message}>
             <Input id="p-sale" type="number" step="0.01" min="0" {...register("salePrice", num)} />

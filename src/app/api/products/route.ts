@@ -1,7 +1,6 @@
 
 import { NextResponse } from "next/server";
 import { withApi, rx, type MongoFilter } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { backfillGroupsOnce } from "@/lib/backfill-groups";
 import { backfillWarrantyOnce } from "@/lib/backfill-warranty";
 import {
@@ -57,13 +56,9 @@ export const GET = withApi(async (req) => {
     });
   }
 
-  const unlocked = await isUnlocked();
-
   const query = Product.find({ $and: and })
     .sort({ name: 1 })
     .limit(limit);
-
-  if (!unlocked) query.select("-costPrice");
 
   const [data, total, locations, groups] = await Promise.all([
     query.lean(),
@@ -86,7 +81,7 @@ export const GET = withApi(async (req) => {
     total,
     locations: locations.filter(Boolean).sort(),
     groups: groups.filter(Boolean).sort(),
-    unlocked,
+    unlocked: true,
   });
 });
 

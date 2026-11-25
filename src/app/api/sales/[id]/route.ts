@@ -10,10 +10,10 @@ import { Sale } from "@/models/sale";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-/** One memo, plus how many of each product were already returned against it. Cost prices are never included. */
+/** One memo, plus how many of each product were already returned against it. */
 export const GET = withApi<Ctx>(async (_req, { params }) => {
   const id = objectId.parse((await params).id);
-  const sale = await Sale.findById(id).select("-items.costPrice").lean();
+  const sale = await Sale.findById(id).lean();
   if (!sale) throw new HttpError(404, "Memo not found");
 
   const agg = await Return.aggregate<{ _id: unknown; qty: number }>([
