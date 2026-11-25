@@ -70,7 +70,7 @@ export const productCreateSchema = productBaseSchema.extend({
 
 export const productUpdateSchema = productBaseSchema.partial();
 
-/** Form schema: cost is optional because editing it is hidden until the PIN unlock. */
+/** Form schema for product create and edit. */
 export const productFormSchema = productBaseSchema.extend({
   costPrice: num().optional(),
 });
@@ -152,10 +152,6 @@ export const returnSchema = z
   });
 
 export type ReturnFormValues = z.infer<typeof returnSchema>;
-
-export const unlockSchema = z.object({
-  pin: z.string().min(4).max(32),
-});
 
 /* ---------- Cover sheet ---------- */
 
