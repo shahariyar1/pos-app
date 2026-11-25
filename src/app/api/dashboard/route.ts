@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { withApi, parseDate } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { paidByDsr } from "@/lib/payments";
 import { round2 } from "@/lib/utils";
 import { Customer } from "@/models/customer";
@@ -17,8 +16,6 @@ export const GET = withApi(async (req) => {
   const to = parseDate(sp.get("to"), "to") ?? endOfToday;
   const range = { createdAt: { $gte: from, $lte: to } };
 
-  const unlocked = await isUnlocked();
-
   const [sales, profitAgg, payments, returns, dues, memoPaid] = await Promise.all([
     Sale.aggregate<{ revenue: number; paid: number; invoices: number; itemsSold: number; discount: number }>([
       { $match: range },
@@ -33,9 +30,7 @@ export const GET = withApi(async (req) => {
         },
       },
     ]),
-    // Cost data is only aggregated when the PIN session is active.
-    unlocked
-      ? Sale.aggregate<{ profit: number }>([
+    Sale.aggregate<{ profit: number }>([
           { $match: range },
           { $unwind: "$items" },
           {
@@ -44,8 +39,7 @@ export const GET = withApi(async (req) => {
               profit: { $sum: { $multiply: [{ $subtract: ["$items.unitPrice", "$items.costPrice"] }, "$items.qty"] } },
             },
           },
-        ])
-      : Promise.resolve([] as { profit: number }[]),
+        ]),
     Payment.aggregate<{ total: number }>([{ $match: range }, { $group: { _id: null, total: { $sum: "$amount" } } }]),
     Return.aggregate<{ total: number; count: number; impact: number }>([
       { $match: range },
@@ -74,7 +68,7 @@ export const GET = withApi(async (req) => {
     returnsCount: r?.count ?? 0,
     outstandingDue: round2(dues[0]?.total ?? 0),
     customersWithDue: dues[0]?.count ?? 0,
-    unlocked,
-    profit: unlocked ? { gross, returnsImpact, net: round2(gross - returnsImpact) } : undefined,
+    unlocked: true,
+    profit: { gross, returnsImpact, net: round2(gross - returnsImpact) },
   });
 });
