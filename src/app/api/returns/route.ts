@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { withApi, HttpError, parseDate, rx, type MongoFilter } from "@/lib/api-handler";
-import { isUnlocked } from "@/lib/auth";
 import { round2 } from "@/lib/utils";
 import { returnSchema } from "@/lib/validations";
 import { Customer } from "@/models/customer";
@@ -16,9 +15,7 @@ export const GET = withApi(async (req) => {
   const q = sp.get("q")?.trim();
   if (q) filter.$or = [{ productName: rx(q) }, { code: rx(q) }, { customerName: rx(q) }, { invoiceNo: rx(q) }];
 
-  const unlocked = await isUnlocked();
   const query = Return.find(filter).sort({ createdAt: -1 }).limit(500);
-  if (!unlocked) query.select("-costPrice -profitImpact");
 
   const [data, totals] = await Promise.all([
     query.lean(),
@@ -27,7 +24,7 @@ export const GET = withApi(async (req) => {
       { $group: { _id: null, total: { $sum: "$refundAmount" } } },
     ]),
   ]);
-  return NextResponse.json({ data, totalRefunded: totals[0]?.total ?? 0, unlocked });
+  return NextResponse.json({ data, totalRefunded: totals[0]?.total ?? 0, unlocked: true });
 });
 
 export const POST = withApi(async (req) => {
