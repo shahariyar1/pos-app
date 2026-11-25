@@ -52,7 +52,6 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
     limit: 2000,
   })}`;
   const { data, isLoading } = useSWR<ProductsResponse>(key, fetcher);
-  const unlocked = data?.unlocked ?? false;
   const products = data?.data ?? [];
   const allVisibleSelected = products.length > 0 && products.every((product) => selectedIds.includes(product._id));
 
@@ -94,7 +93,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       { accessorKey: "group", header: "Group", cell: ({ row }) => (row.original.group ? <Badge variant="outline">{row.original.group}</Badge> : <span className="text-muted-foreground">None</span>) },
       { accessorKey: "location", header: "Location", cell: ({ row }) => (row.original.location ? <Badge variant="secondary">{row.original.location}</Badge> : <span className="text-muted-foreground">None</span>) },
     ];
-    if (unlocked) cols.push({ accessorKey: "costPrice", header: "Cost", cell: ({ row }) => formatMoney(row.original.costPrice ?? 0) });
+    cols.push({ accessorKey: "costPrice", header: "Cost", cell: ({ row }) => formatMoney(row.original.costPrice ?? 0) });
     cols.push(
       { accessorKey: "salePrice", header: "Sale price", cell: ({ row }) => formatMoney(row.original.salePrice) },
       { accessorKey: "stock", header: "Stock", cell: ({ row }) => {
@@ -110,7 +109,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
       ) },
     );
     return cols;
-  }, [unlocked, addProduct, selectedIds, allVisibleSelected, toggleProduct, toggleAllVisible]);
+  }, [addProduct, selectedIds, allVisibleSelected, toggleProduct, toggleAllVisible]);
 
   async function confirmBulkDelete() {
     if (selectedIds.length === 0) return;
@@ -155,7 +154,7 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
 
       <ImportFileDialog key={String(importOpen)} open={importOpen} onOpenChange={setImportOpen} />
       <ReceiveStockDialog key={receiving?._id ?? "none"} product={receiving} onClose={() => setReceiving(null)} />
-      <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} canEditCost={unlocked} />
+      <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} />
 
       <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete {selectedIds.length} selected products?</AlertDialogTitle><AlertDialogDescription>These products will be removed from the active inventory. Past sales and returns will keep their history. This action cannot be undone from the inventory screen.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmBulkDelete}>Delete selected</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Remove {deleting?.name}?</AlertDialogTitle><AlertDialogDescription>It disappears from search and the memo. Past sales and returns keep their history.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Keep product</AlertDialogCancel><AlertDialogAction onClick={confirmDelete}>Remove product</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
