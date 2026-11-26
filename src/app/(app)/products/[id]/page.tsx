@@ -62,7 +62,7 @@ export default async function ProductDetailsPage({
         _id: id,
         isActive: true,
     })
-        .select("-costPrice")
+        .select("name code salePrice stock location group warrantyDays compatibleModels imageUrl imagePublicId galleryImages youtubeUrls")
         .lean();
 
     if (!product) notFound();
