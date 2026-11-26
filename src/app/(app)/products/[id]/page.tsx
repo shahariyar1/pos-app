@@ -8,6 +8,7 @@ import { connectDB } from "@/lib/db";
 import { Product } from "@/models/product";
 import { ProductGallery } from "@/features/inventory/product-gallery";
 import { AddToMemoButton } from "@/features/pos/add-to-memo-button";
+import { CompatibleModelsEditor } from "@/features/inventory/compatible-models-editor";
 
 export const metadata: Metadata = {
     title: "Product Details",
@@ -149,9 +150,9 @@ export default async function ProductDetailsPage({
                         </div>
                     </div>
 
-                    {product.compatibleModels?.length > 0 && (
+                    {true && (
                         <div>
-                            <h2 className="font-semibold">Compatible Models</h2>
+                            <div className="flex items-center justify-between gap-2"><h2 className="font-semibold">Compatible Models</h2><CompatibleModelsEditor productId={product._id.toString()} initialModels={product.compatibleModels ?? []} /></div>
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {product.compatibleModels.map((model: string) => (
                                     <Badge key={model} variant="outline">
