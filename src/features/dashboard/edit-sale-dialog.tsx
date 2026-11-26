@@ -321,7 +321,7 @@ export function EditSaleDialog({ sale, onClose }: { sale: Sale | null; onClose: 
                     </div>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Input aria-label={`Quantity returned: ${r.name || "item"}`} inputMode="numeric" className="h-9 w-16 px-1 text-center" value={r.qty} onFocus={(e) => e.currentTarget.select()} onChange={(e) => setRet(r.key, { qty: Math.max(1, Math.floor(num(e.target.value))) })} />
+                        <Input aria-label={`Quantity returned: ${r.name || "item"}`} inputMode="numeric" className="h-9 w-16 px-1 text-center" value={r.qty === 0 ? "" : r.qty} onChange={(e) => { const value = e.target.value; setRet(r.key, { qty: value === "" ? 0 : Math.max(0, Math.floor(num(value))) }); }} onBlur={() => setRet(r.key, { qty: Math.max(1, r.qty) })} />
                         <Input aria-label={`Return price: ${r.name || "item"}`} type="number" min="0" step="0.01" inputMode="decimal" className="h-9 w-24 text-right" value={r.unitPrice} onChange={(e) => setRet(r.key, { unitPrice: num(e.target.value) })} />
                         <span className="min-w-24 whitespace-nowrap text-right font-medium">- {formatMoney(r.qty * r.unitPrice)}</span>
                       </div>
