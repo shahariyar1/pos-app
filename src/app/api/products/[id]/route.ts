@@ -3,12 +3,14 @@ import { withApi, HttpError } from "@/lib/api-handler";
 import { objectId, productUpdateSchema } from "@/lib/validations";
 import { logReceipt } from "@/lib/warranty";
 import { Product } from "@/models/product";
+import { resolveProductGroup } from "@/lib/product-groups";
 
 type Ctx = { params: Promise<{ id: string }> };
 
 export const PATCH = withApi<Ctx>(async (req, { params }) => {
   const id = objectId.parse((await params).id);
   const body = productUpdateSchema.parse(await req.json());
+  if (body.group !== undefined) body.group = await resolveProductGroup(body.group);
   const before = await Product.findById(id).select("stock").lean();
   const product = await Product.findByIdAndUpdate(id, body, { new: true, runValidators: true });
   if (!product || !before) throw new HttpError(404, "Product not found");

@@ -10,6 +10,7 @@ import {
 } from "@/lib/warranty";
 import { productCreateSchema } from "@/lib/validations";
 import { Product } from "@/models/product";
+import { escapeGroupRegex, resolveProductGroup, uniqueGroupNames } from "@/lib/product-groups";
 
 export const GET = withApi(async (req) => {
   await backfillGroupsOnce();
@@ -39,7 +40,10 @@ export const GET = withApi(async (req) => {
   }
 
   if (location) and.push({ location });
-  if (group) and.push({ group });
+  if (group) {
+    const escapedGroup = escapeGroupRegex(group.trim());
+    and.push({ group: new RegExp(`^${escapedGroup}$`, "i") });
+  }
 
   if (stock === "out") {
     and.push({ stock: 0 });
@@ -80,7 +84,7 @@ export const GET = withApi(async (req) => {
     data: dataWithMatches,
     total,
     locations: locations.filter(Boolean).sort(),
-    groups: groups.filter(Boolean).sort(),
+    groups: uniqueGroupNames(groups),
     unlocked: true,
   });
 });
@@ -88,12 +92,15 @@ export const GET = withApi(async (req) => {
 export const POST = withApi(async (req) => {
   const body = productCreateSchema.parse(await req.json());
 
+  const group = await resolveProductGroup(body.group);
+
   const warrantyDays =
     body.warrantyDays ||
     (isDisplayItem(body) ? WARRANTY_DEFAULT_DAYS : 0);
 
   const product = await Product.create({
     ...body,
+    group,
     compatibleModels: body.compatibleModels || [],
     familyCode: body.familyCode || "",
     warrantyDays,
