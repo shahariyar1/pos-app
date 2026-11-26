@@ -154,7 +154,7 @@ export default async function ProductDetailsPage({
                         <div>
                             <div className="flex items-center justify-between gap-2"><h2 className="font-semibold">Compatible Models</h2><CompatibleModelsEditor productId={product._id.toString()} initialModels={product.compatibleModels ?? []} /></div>
                             <div className="mt-2 flex flex-wrap gap-2">
-                                {product.compatibleModels.map((model: string) => (
+                                {(product.compatibleModels ?? []).map((model: string) => (
                                     <Badge key={model} variant="outline">
                                         {model}
                                     </Badge>
@@ -172,7 +172,7 @@ export default async function ProductDetailsPage({
                     </h2>
 
                     <div className="grid gap-4 md:grid-cols-2">
-                        {product.youtubeUrls.map((url: string, index: number) => {
+                        {(product.youtubeUrls ?? []).map((url: string, index: number) => {
                             const videoId = getYouTubeVideoId(url);
 
                             if (!videoId) return null;
