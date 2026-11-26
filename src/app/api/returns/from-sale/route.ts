@@ -67,6 +67,7 @@ export const POST = withApi(async (req) => {
       customer: customer?._id,
       customerName,
       invoiceNo: sale.invoiceNo,
+      dsr: sale.dsr ?? "",
       qty,
       unitPrice,
       costPrice: round2(unitCost),
@@ -97,7 +98,8 @@ export const POST = withApi(async (req) => {
         code: p.code,
         customer: customer?._id,
         customerName,
-        // not on this memo, so it is not tied to the memo's invoice number
+        // Keep the original salesperson even though this extra item has no invoice link.
+        dsr: sale.dsr ?? "",
         qty: e.qty,
         unitPrice,
         costPrice: p.costPrice,

@@ -122,6 +122,9 @@ export type DsrTotals = {
   /** Still unpaid on those memos. */
   due: number;
   memos: number;
+  grossProfit: number;
+  returnsImpact: number;
+  netProfit: number;
 };
 export type Dsr = DsrTotals & { _id: string; name: string };
 export type DsrResponse = { data: Dsr[]; all: DsrTotals };
