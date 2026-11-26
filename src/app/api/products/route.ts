@@ -40,49 +40,10 @@ export const GET = withApi(async (req) => {
   }
 
   if (location) and.push({ location });
-  if (group) and.push({ group: new RegExp(`^${group.trim().replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\if (group) and.push({ group });")}
-import { NextResponse } from "next/server";
-import { withApi, rx, type MongoFilter } from "@/lib/api-handler";
-import { backfillGroupsOnce } from "@/lib/backfill-groups";
-import { backfillWarrantyOnce } from "@/lib/backfill-warranty";
-import {
-  WARRANTY_DEFAULT_DAYS,
-  isDisplayItem,
-  logReceipt,
-} from "@/lib/warranty";
-import { productCreateSchema } from "@/lib/validations";
-import { Product } from "@/models/product";
-import { resolveProductGroup, uniqueGroupNames } from "@/lib/product-groups";
-
-export const GET = withApi(async (req) => {
-  await backfillGroupsOnce();
-  await backfillWarrantyOnce();
-
-  const sp = req.nextUrl.searchParams;
-  const q = sp.get("q")?.trim() ?? "";
-  const location = sp.get("location");
-  const group = sp.get("group");
-  const stock = sp.get("stock");
-  const limit = Math.min(Number(sp.get("limit")) || 200, 2000);
-
-  const and: MongoFilter[] = [{ isActive: true }];
-
-  // Search by name, code, location, family code
-  // and all compatible phone models.
-  for (const token of q.split(/\s+/).filter(Boolean)) {
-    and.push({
-      $or: [
-        { name: rx(token) },
-        { code: rx(token) },
-        { location: rx(token) },
-        { familyCode: rx(token) },
-        { compatibleModels: rx(token) },
-      ],
-    });
+  if (group) {
+    const escapedGroup = group.trim().replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&");
+    and.push({ group: new RegExp(`^${escapedGroup}$`, "i") });
   }
-
-  if (location) and.push({ location });
-  , "i") });
 
   if (stock === "out") {
     and.push({ stock: 0 });
