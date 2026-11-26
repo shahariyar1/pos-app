@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Search, UserCog } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DsrDialog } from "@/features/dsr/dsr-dialog";
+import { DsrReports } from "./dsr-reports";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "@/hooks/use-debounce";
 import { fetcher, qs } from "@/lib/fetcher";
 import { dayRange, formatMoney, todayStr } from "@/lib/utils";
-import type { DashboardStats, DsrResponse } from "@/types";
+import type { DashboardStats } from "@/types";
 import { ProfitCard } from "./profit-card";
 import { SalesTable } from "./sales-table";
 
@@ -36,7 +36,6 @@ export function DashboardScreen() {
   const [status, setStatus] = useState("all");
   const [q, setQ] = useState("");
   const [dsr, setDsr] = useState<string | null>(null);
-  const [dsrOpen, setDsrOpen] = useState(false);
   const debouncedQ = useDebounce(q.trim(), 250);
 
   useEffect(() => {
@@ -49,10 +48,6 @@ export function DashboardScreen() {
   const { data: stats } = useSWR<DashboardStats>(range ? `/api/dashboard${qs(range)}` : null, fetcher);
   const isToday = from === todayStr() && to === todayStr();
 
-  // What each DSR sold TODAY (independent of the date range chosen above)
-  const today = from ? dayRange(todayStr(), todayStr()) : null;
-  const { data: dsrToday } = useSWR<DsrResponse>(today ? `/api/dsr${qs(today)}` : null, fetcher);
-  const picked = dsr ? dsrToday?.data.find((d) => d.name === dsr) : undefined;
 
   return (
     <div className="space-y-6">
@@ -98,43 +93,9 @@ export function DashboardScreen() {
           </div>
         </div>
 
-        <div className="space-y-2 rounded-xl border bg-card p-3" aria-label="DSR">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold">DSR · money received today</p>
-            <Button variant="ghost" size="sm" onClick={() => setDsrOpen(true)}>
-              <UserCog className="size-4" aria-hidden /> Manage DSR
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by DSR">
-            <Button size="sm" variant={dsr === null ? "default" : "outline"} onClick={() => setDsr(null)}>
-              All
-              <span className="text-xs opacity-80">{dsrToday ? formatMoney(dsrToday.all.paid) : ""}</span>
-            </Button>
-            {dsrToday?.data.map((d) => (
-              <Button key={d._id} size="sm" variant={dsr === d.name ? "default" : "outline"} onClick={() => setDsr(d.name)}>
-                {d.name}
-                <span className="text-xs opacity-80">{formatMoney(d.paid)}</span>
-              </Button>
-            ))}
-            {dsrToday && dsrToday.data.length === 0 && <p className="text-sm text-muted-foreground">No DSR yet. Use Manage DSR to add one.</p>}
-          </div>
-          {(picked || (dsr === null && dsrToday)) && (() => {
-            const t = picked ?? dsrToday!.all;
-            return (
-              <div className="grid gap-2 rounded-lg bg-accent px-3 py-3 text-accent-foreground sm:grid-cols-3" aria-live="polite">
-                <p className="sm:col-span-3">
-                  <strong>{picked ? picked.name : "Everyone"}</strong> received <strong className="text-lg">{formatMoney(t.paid)}</strong> today
-                </p>
-                <p className="text-sm">Sold <strong>{formatMoney(t.sold)}</strong> in {t.memos} memo{t.memos === 1 ? "" : "s"}</p>
-                <p className="text-sm">Still due <strong className={t.due > 0 ? "text-warn" : ""}>{formatMoney(t.due)}</strong></p>
-                <p className="text-xs opacity-80 sm:text-right">Received counts money taken today, even on older memos.</p>
-              </div>
-            );
-          })()}
-        </div>
+        <DsrReports onSelectDsr={setDsr} />
 
         {range && <SalesTable filters={{ from: range.from, to: range.to, status, q: debouncedQ, dsr }} />}
-        <DsrDialog open={dsrOpen} onOpenChange={setDsrOpen} />
       </section>
     </div>
   );
