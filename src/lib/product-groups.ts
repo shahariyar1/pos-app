@@ -26,3 +26,7 @@ export function uniqueGroupNames(values: string[]) {
   }
   return [...byNormalizedName.values()].sort((a, b) => a.localeCompare(b));
 }
+
+export function escapeGroupRegex(value: string) {
+  return value.replace(/[|\\{}()[\]^$+*?.-]/g, "\\$&");
+}
