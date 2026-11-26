@@ -10,7 +10,7 @@ import {
 } from "@/lib/warranty";
 import { productCreateSchema } from "@/lib/validations";
 import { Product } from "@/models/product";
-import { resolveProductGroup, uniqueGroupNames } from "@/lib/product-groups";
+import { escapeGroupRegex, resolveProductGroup, uniqueGroupNames } from "@/lib/product-groups";
 
 export const GET = withApi(async (req) => {
   await backfillGroupsOnce();
@@ -41,7 +41,7 @@ export const GET = withApi(async (req) => {
 
   if (location) and.push({ location });
   if (group) {
-    const escapedGroup = group.trim().replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&");
+    const escapedGroup = escapeGroupRegex(group.trim());
     and.push({ group: new RegExp(`^${escapedGroup}$`, "i") });
   }
 
