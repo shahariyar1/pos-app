@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileUp, PackagePlus, Pencil, Plus, Search, Trash2 } from "lucide-react";
@@ -43,6 +43,15 @@ export function InventoryScreen({ initialQuery }: { initialQuery: string }) {
   const [receiving, setReceiving] = useState<Product | null>(null);
   const addProduct = useCart((s) => s.addProduct);
   const debounced = useDebounce(q.trim(), 200);
+  const pendingScrollRestore = useRef<{ top: number; previousCount: number } | null>(null);
+  const [scrollRestoreVersion, setScrollRestoreVersion] = useState(0);
+
+  useLayoutEffect(() => {
+    const pending = pendingScrollRestore.current;
+    if (!pending || products.length === pending.previousCount) return;
+    window.scrollTo({ top: pending.top, behavior: "instant" });
+    pendingScrollRestore.current = null;
+  }, [products.length, scrollRestoreVersion]);
 
   const key = `/api/products${qs({
     q: debounced,
