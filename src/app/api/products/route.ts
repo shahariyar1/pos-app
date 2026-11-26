@@ -92,12 +92,15 @@ export const GET = withApi(async (req) => {
 export const POST = withApi(async (req) => {
   const body = productCreateSchema.parse(await req.json());
 
+  const group = await resolveProductGroup(body.group);
+
   const warrantyDays =
     body.warrantyDays ||
     (isDisplayItem(body) ? WARRANTY_DEFAULT_DAYS : 0);
 
   const product = await Product.create({
     ...body,
+    group,
     compatibleModels: body.compatibleModels || [],
     familyCode: body.familyCode || "",
     warrantyDays,
