@@ -75,6 +75,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
         </aside>
 
+        {pathname.startsWith("/pos") && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed right-2 top-2 z-50 size-8 rounded-full border bg-card/95 shadow-sm"
+            aria-label="Log out"
+            title="Log out"
+            onClick={logout}
+          >
+            <LogOut className="size-4" />
+          </Button>
+        )}
         {!pathname.startsWith("/pos") && (
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur lg:px-6">
             <Button
