@@ -75,28 +75,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
         </aside>
 
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur lg:px-6">
+        {pathname.startsWith("/pos") && (
           <Button
             variant="outline"
-            className="h-9 flex-1 justify-start gap-2 bg-card text-muted-foreground sm:max-w-md"
-            onClick={() => setPaletteOpen(true)}
+            size="icon"
+            className="fixed right-2 top-2 z-50 size-8 rounded-full border bg-card/95 shadow-sm"
+            aria-label="Log out"
+            title="Log out"
+            onClick={logout}
           >
-            <Search className="size-4" aria-hidden />
-            <span className="truncate">Search products or customers</span>
-            <kbd className="ml-auto hidden rounded border bg-muted px-1.5 py-0.5 text-xs sm:inline">Ctrl K</kbd>
-          </Button>
-          {mounted && count > 0 && !pathname.startsWith("/pos") && (
-            <Button asChild size="sm" className="ml-auto">
-              <Link href="/pos">
-                <ShoppingCart className="size-4" aria-hidden /> Memo · {count}
-              </Link>
-            </Button>
-          )}
-          <Button variant="ghost" size="icon" className="ml-auto shrink-0" aria-label="Log out" title="Log out" onClick={logout}>
             <LogOut className="size-4" />
           </Button>
-        </header>
-
+        )}
+        {!pathname.startsWith("/pos") && (
+          <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/90 px-4 backdrop-blur lg:px-6">
+            <Button
+              variant="outline"
+              className="h-9 flex-1 justify-start gap-2 bg-card text-muted-foreground sm:max-w-md"
+              onClick={() => setPaletteOpen(true)}
+            >
+              <Search className="size-4" aria-hidden />
+              <span className="truncate">Search products or customers</span>
+              <kbd className="ml-auto hidden rounded border bg-muted px-1.5 py-0.5 text-xs sm:inline">Ctrl K</kbd>
+            </Button>
+            {mounted && count > 0 && (
+              <Button asChild size="sm" className="ml-auto">
+                <Link href="/pos">
+                  <ShoppingCart className="size-4" aria-hidden /> Memo · {count}
+                </Link>
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" className="ml-auto shrink-0" aria-label="Log out" title="Log out" onClick={logout}>
+              <LogOut className="size-4" />
+            </Button>
+          </header>
+        )}
         <OfflineBanner />
         <main className="p-4 pb-24 sm:pb-6 lg:p-6">{children}</main>
 

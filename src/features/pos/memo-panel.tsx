@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { Minus, Plus, Trash2, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
@@ -97,6 +97,8 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
   const { changeQty, setQty, removeItem, setPrice, setPaid, discard, reset } = useCart.getState();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
+  const [paymentPanelHeight, setPaymentPanelHeight] = useState(300);
+  const dragStart = useRef<{ y: number; height: number } | null>(null);
 
   const discountValue = useCart((s) => s.discountValue);
   const discountUnit = useCart((s) => s.discountUnit);
@@ -203,7 +205,7 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2">
+      <div className="scrollbar-hidden min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2">
         <CustomerPicker />
 
         <div className="space-y-1.5">
@@ -282,7 +284,31 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
         )}
       </div>
 
-      <div className="space-y-2 border-t bg-card px-3 py-2">
+      <div
+        className="shrink-0 overflow-hidden border-t bg-card px-3 pb-1"
+        style={{ height: `${paymentPanelHeight}px` }}
+      >
+        <div
+          role="separator"
+          aria-label="Drag to resize memo payment section"
+          aria-orientation="horizontal"
+          className="sticky top-0 z-10 -mx-3 mb-0 flex h-4 cursor-row-resize touch-none items-center justify-center bg-card"
+          onPointerDown={(e) => {
+            dragStart.current = { y: e.clientY, height: paymentPanelHeight };
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            if (!dragStart.current) return;
+            const delta = dragStart.current.y - e.clientY;
+            setPaymentPanelHeight(Math.max(245, Math.min(520, dragStart.current.height + delta)));
+          }}
+          onPointerUp={() => { dragStart.current = null; }}
+          onPointerCancel={() => { dragStart.current = null; }}
+          onLostPointerCapture={() => { dragStart.current = null; }}
+        >
+          <span className="h-1 w-12 rounded-full bg-muted-foreground/40" />
+        </div>
+        <div className="space-y-2">
         <dl className="space-y-1 text-sm">
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Subtotal</dt>
@@ -300,17 +326,17 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
               <dd>{formatMoney(previousDue)}</dd>
             </div>
           )}
-          <div className="flex justify-between border-t pt-2 text-base font-semibold">
+          <div className="flex justify-between border-t pt-1 text-sm font-semibold">
             <dt>Grand total</dt>
             <dd>{formatMoney(grandTotal)}</dd>
           </div>
         </dl>
 
-        <DiscountField id="memo-discount" value={discountValue} unit={discountUnit} amount={discount} onChange={setDiscount} />
+        <div className="[&_input]:h-8 [&_label]:text-xs [&_button]:h-7"><DiscountField id="memo-discount" value={discountValue} unit={discountUnit} amount={discount} onChange={setDiscount} /></div>
 
         <div className="flex items-end gap-2">
           <div className="flex-1 space-y-1.5">
-            <Label htmlFor="memo-paid">Received now</Label>
+            <Label className="text-xs" htmlFor="memo-paid">Received now</Label>
             <Input
               id="memo-paid"
               inputMode="decimal"
@@ -322,25 +348,26 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
               }}
             />
           </div>
-          <Button variant="outline" onClick={() => setPaid(payable)} disabled={payable <= 0}>
+          <Button className="h-7 px-2 text-[11px]" variant="outline" onClick={() => setPaid(payable)} disabled={payable <= 0}>
             Full amount
           </Button>
         </div>
-        <p className="flex justify-between text-sm">
+        <p className="flex justify-between text-xs">
           <span className="text-muted-foreground">Balance if saved as due</span>
           <span className={cn(balanceAfter > 0 && "font-medium text-warn")}>{formatMoney(balanceAfter)}</span>
         </p>
 
-        <div className="grid grid-cols-2 gap-2">
-          <Button size="lg" className="h-12" disabled={!items.length || submitting} onClick={() => submit("instant")}>
+        <div className="grid grid-cols-2 gap-1">
+          <Button size="lg" className="h-7 px-2 text-[11px]" disabled={!items.length || submitting} onClick={() => submit("instant")}>
             Instant sell
           </Button>
-          <Button size="lg" variant="outline" className="h-12" disabled={!items.length || submitting} onClick={() => submit("due")}>
+          <Button size="lg" variant="outline" className="h-8 text-xs" disabled={!items.length || submitting} onClick={() => submit("due")}>
             Sold, pay later
           </Button>
-          <Button size="lg" variant="secondary" className="col-span-2 h-12" disabled={!items.length || submitting} onClick={saveOrder}>
+          <Button size="lg" variant="secondary" className="col-span-2 h-7 px-2 text-[11px]" disabled={!items.length || submitting} onClick={saveOrder}>
             Save as order (not delivered yet)
           </Button>
+        </div>
         </div>
       </div>
     </div>

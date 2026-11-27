@@ -233,7 +233,7 @@ export function PosScreen({ initialQuery, initialGroup }: { initialQuery: string
         </Button>
       )}
       <Sheet open={memoOpen} onOpenChange={setMemoOpen}>
-        <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
+        <SheetContent side="right" className="flex h-[100dvh] min-h-0 w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-md">
           <SheetHeader className="sr-only">
             <SheetTitle>Memo</SheetTitle>
             <SheetDescription>Items, customer and payment for the current sale</SheetDescription>
