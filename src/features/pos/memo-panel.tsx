@@ -303,7 +303,8 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
             setPaymentPanelHeight(Math.max(245, Math.min(520, dragStart.current.height + delta)));
           }}
           onPointerUp={() => { dragStart.current = null; }}
-          onPointerCancel={() => { dragStart.current = null; }}\n          onLostPointerCapture={() => { dragStart.current = null; }}
+          onPointerCancel={() => { dragStart.current = null; }}
+          onLostPointerCapture={() => { dragStart.current = null; }}
         >
           <span className="h-1 w-12 rounded-full bg-muted-foreground/40" />
         </div>
