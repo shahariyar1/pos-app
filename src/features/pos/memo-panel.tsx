@@ -97,7 +97,7 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
   const { changeQty, setQty, removeItem, setPrice, setPaid, discard, reset } = useCart.getState();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
-  const [paymentPanelHeight, setPaymentPanelHeight] = useState(250);
+  const [paymentPanelHeight, setPaymentPanelHeight] = useState(300);
   const dragStart = useRef<{ y: number; height: number } | null>(null);
 
   const discountValue = useCart((s) => s.discountValue);
@@ -300,10 +300,10 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
           onPointerMove={(e) => {
             if (!dragStart.current) return;
             const delta = dragStart.current.y - e.clientY;
-            setPaymentPanelHeight(Math.max(230, Math.min(420, dragStart.current.height + delta)));
+            setPaymentPanelHeight(Math.max(245, Math.min(520, dragStart.current.height + delta)));
           }}
           onPointerUp={() => { dragStart.current = null; }}
-          onPointerCancel={() => { dragStart.current = null; }}
+          onPointerCancel={() => { dragStart.current = null; }}\n          onLostPointerCapture={() => { dragStart.current = null; }}
         >
           <span className="h-1 w-12 rounded-full bg-muted-foreground/40" />
         </div>
@@ -347,7 +347,7 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
               }}
             />
           </div>
-          <Button className="h-8 px-2 text-xs" variant="outline" onClick={() => setPaid(payable)} disabled={payable <= 0}>
+          <Button className="h-7 px-2 text-[11px]" variant="outline" onClick={() => setPaid(payable)} disabled={payable <= 0}>
             Full amount
           </Button>
         </div>
@@ -357,13 +357,13 @@ export function MemoPanel({ onDone }: { onDone?: () => void }) {
         </p>
 
         <div className="grid grid-cols-2 gap-1">
-          <Button size="lg" className="h-8 text-xs" disabled={!items.length || submitting} onClick={() => submit("instant")}>
+          <Button size="lg" className="h-7 px-2 text-[11px]" disabled={!items.length || submitting} onClick={() => submit("instant")}>
             Instant sell
           </Button>
           <Button size="lg" variant="outline" className="h-8 text-xs" disabled={!items.length || submitting} onClick={() => submit("due")}>
             Sold, pay later
           </Button>
-          <Button size="lg" variant="secondary" className="col-span-2 h-8 text-xs" disabled={!items.length || submitting} onClick={saveOrder}>
+          <Button size="lg" variant="secondary" className="col-span-2 h-7 px-2 text-[11px]" disabled={!items.length || submitting} onClick={saveOrder}>
             Save as order (not delivered yet)
           </Button>
         </div>
